@@ -1,0 +1,15 @@
+/* App.css */
+
+.app-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f9fa; /* tom claro para combinar com Bootstrap */
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem 1rem;
+  max-width: 960px;
+  margin: 0 auto;
+}

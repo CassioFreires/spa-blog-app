@@ -1,0 +1,73 @@
+// src/data/post.mocks.ts
+export const artigos = [
+  {
+    id: 1,
+    title: 'Tecnologia no Século 21',
+    category: 'Tecnologia',
+    content: 'A revolução digital continua avançando com IA, blockchain e IoT moldando o futuro...',
+    image: 'https://source.unsplash.com/random/800x400?technology',
+  },
+  {
+    id: 2,
+    title: 'A Natureza e seus Mistérios',
+    category: 'Natureza',
+    content: 'Exploramos a biodiversidade, ecossistemas e fenômenos naturais impressionantes...',
+    image: 'https://source.unsplash.com/random/800x400?nature',
+  },
+  {
+    id: 3,
+    title: 'Negócios em Alta',
+    category: 'Negócios',
+    content: 'Startups, inovação e modelos de negócios disruptivos estão dominando o mercado...',
+    image: 'https://source.unsplash.com/random/800x400?business',
+  },
+  {
+    id: 4,
+    title: 'Programação Moderna com JavaScript',
+    category: 'Tecnologia',
+    content: 'ES6+, frameworks como React e padrões de desenvolvimento orientam o futuro da web...',
+    image: 'https://source.unsplash.com/random/800x400?javascript',
+  },
+  {
+    id: 5,
+    title: 'UX e UI: A Arte da Experiência',
+    category: 'Design',
+    content: 'Design centrado no usuário, microinterações e tendências visuais para 2025...',
+    image: 'https://source.unsplash.com/random/800x400?design',
+  },
+  {
+    id: 6,
+    title: 'Cloud Computing: O Futuro da Infraestrutura',
+    category: 'Infraestrutura',
+    content: 'Conheça os benefícios da nuvem pública, privada e híbrida no cenário atual...',
+    image: 'https://source.unsplash.com/random/800x400?cloud',
+  },
+  {
+    id: 7,
+    title: 'Cibersegurança: Protegendo Dados na Era Digital',
+    category: 'Segurança',
+    content: 'Técnicas e boas práticas para manter a privacidade e segurança online...',
+    image: 'https://source.unsplash.com/random/800x400?cybersecurity',
+  },
+  {
+    id: 8,
+    title: 'Desenvolvimento Mobile em 2025',
+    category: 'Mobile',
+    content: 'React Native, Flutter e as novas diretrizes para apps rápidos e acessíveis...',
+    image: 'https://source.unsplash.com/random/800x400?mobile',
+  },
+  {
+    id: 9,
+    title: 'Inteligência Artificial no Cotidiano',
+    category: 'IA',
+    content: 'Como a IA está sendo usada em saúde, educação, transporte e mais...',
+    image: 'https://source.unsplash.com/random/800x400?ai',
+  },
+  {
+    id: 10,
+    title: 'Carreiras em TI: Caminhos e Habilidades',
+    category: 'Carreira',
+    content: 'Front-end, Back-end, DevOps, QA... como escolher seu caminho na tecnologia...',
+    image: 'https://source.unsplash.com/random/800x400?career',
+  },
+];

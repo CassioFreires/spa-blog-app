@@ -1,4 +1,59 @@
+/* index.css */
+
+/* Reset básico */
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+
+/* Definições globais */
+:root {
+  --font-base: 'Segoe UI', Roboto, Arial, sans-serif;
+  --color-bg: #ffffff;
+  --color-text: #333333;
+}
+
+body {
+  font-family: var(--font-base);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Links */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Imagens responsivas */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Botões */
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* Listas sem estilo por padrão */
+ul, ol {
+  list-style: none;
+}
+
+/* Parágrafos */
+p {
+  margin-bottom: 1rem;
+}
+
+/* Cabeçalhos */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
 }

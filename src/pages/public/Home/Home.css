@@ -1,0 +1,66 @@
+.home-page {
+  padding: 2rem 0;
+}
+
+.home-page .card {
+  border-radius: 0.75rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.home-page .card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.home-page .card-title {
+  font-weight: 700;
+  color: #0d6efd; /* Cor primária Bootstrap */
+}
+
+.home-page .btn-primary {
+  border-radius: 0.5rem;
+}
+
+.hero-section {
+  background-image: url('https://source.unsplash.com/1600x600?technology,code');
+  background-size: cover;
+  background-position: center;
+  height: 60vh;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.hero-section .overlay {
+  background-color: rgba(0, 0, 0, 0.6);
+  height: 100%;
+  padding: 2rem;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-title {
+  animation: floatTitle 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes floatTitle {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-10px); }
+}
+
+
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 0.75rem;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
