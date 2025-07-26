@@ -1,6 +1,17 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import NavUserPremium from "../NavUserPremium/NavUserPremium.components";
+import './NabBar.css';
 
 function NavBar() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   return (
     <header className="navbar navbar-expand-lg navbar-dark bg-dark">
       <nav className="container-fluid">
@@ -43,14 +54,24 @@ function NavBar() {
             </li>
           </ul>
 
-          {/* Login/Cadastro à direita */}
+          {/* Login/Cadastro ou Logout à direita */}
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <Link className="nav-link text-white" to="/login">Login</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link text-white" to="/cadastra-se">Cadastra-se</Link>
-            </li>
+            {user ? (
+              <>
+                <li className="nav-item">
+                  <NavUserPremium />
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link text-white" to="/login">Login</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link text-white" to="/cadastra-se">Cadastra-se</Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </nav>

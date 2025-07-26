@@ -1,24 +1,22 @@
 import Container from '../../../components/Container/Container.components';
-import './Profile.css'
+import { useAuth } from '../../../contexts/AuthContext';
+import './Profile.css';
 
 function ProfilePage() {
-  const user = {
-    nome: 'Cassio Souza',
-    email: 'cassio@email.com',
-    bio: 'Desenvolvedor fullstack apaixonado por tecnologia e inovação.',
-    avatar: 'https://i.pravatar.cc/150?img=11',
-  };
+  const user = useAuth()
+  console.log(user)
+
 
   return (
     <Container>
       <section className="perfil-page">
         <h2 className="mb-4">Meu Perfil</h2>
         <div className="card shadow-sm p-4 d-flex flex-row align-items-center gap-4">
-          <img src={user.avatar} alt={user.nome} className="perfil-avatar" />
+          <img src={'https://i.pravatar.cc/150?img=11'} alt={user.user?.name} className="perfil-avatar" />
           <div>
-            <h4>{user.nome}</h4>
-            <p className="text-secondary">{user.email}</p>
-            <p>{user.bio}</p>
+            <h4>{user.user?.name}</h4>
+            <p className="text-secondary">{user.user?.email}</p>
+            <p>{user.user?.bio}</p>
             <button className="btn btn-outline-primary btn-sm mt-2">
               Editar Perfil
             </button>

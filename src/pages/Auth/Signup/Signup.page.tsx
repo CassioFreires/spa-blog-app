@@ -1,12 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from '../../../components/Container/Container.components';
-import './Signup.css'
+import AuthService from '../../../services/auth/auth.service';
+import './Signup.css';
+
 
 function SignupPage() {
+
+  const authService = new AuthService();
+
   const navigate = useNavigate();
   const [form, setForm] = useState({
     nome: '',
+    sobrenome: '',
     email: '',
     senha: '',
     confirmarSenha: '',
@@ -17,7 +23,7 @@ function SignupPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (form.senha !== form.confirmarSenha) {
@@ -27,6 +33,14 @@ function SignupPage() {
 
     // Simulação de cadastro
     console.log('Usuário cadastrado:', form);
+    const user = {
+      name: form.nome,
+      lastName: form.sobrenome,
+      email: form.email,
+      password_hash: form.senha,
+      confirmPassword: form.confirmarSenha
+    }
+    await authService.signup(user);
     navigate('/login');
   };
 
@@ -50,6 +64,20 @@ function SignupPage() {
                   name="nome"
                   placeholder="Seu nome completo"
                   value={form.nome}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="mb-3">
+                <label htmlFor="sobrenome" className="form-label fw-semibold">Sobrenome</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="sobrenome"
+                  name="sobrenome"
+                  placeholder="Seu Sobrenome"
+                  value={form.sobrenome}
                   onChange={handleChange}
                   required
                 />

@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from '../../../components/Container/Container.components';
 import './Signin.css';
-import AuthService from '../../../services/auth/signin';
+import AuthService from '../../../services/auth/auth.service';
+import { useAuth } from '../../../contexts/AuthContext';
 
 function SigninPage() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', senha: '' });
   const [erro, setErro] = useState('');
   const authService = new AuthService();
+  const { login } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -16,16 +18,24 @@ function SigninPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('teste')
-      await authService.signin(form.email, form.senha)
-    
-    // Simulação de login
-    // if (form.email === 'admin@blog.com' && form.senha === '123456') {
-      
-    //   navigate('/painel/perfil'); // redireciona para home ou dashboard
-    // } else {
-    //   setErro('E-mail ou senha inválidos');
-    // }
+    try {
+      const auth = await authService.signin(form.email, form.senha);
+
+      // context auth
+      login(auth.user);
+
+      if (auth.user.role.name === 'admin') {
+        navigate('/painel/admin');
+      } else if (auth.user.role.name === 'editor') {
+        navigate('/painel/editor');
+      } else {
+        navigate('/painel/perfil');
+
+      }
+    } catch (error: any) {
+      console.error(error);
+      setErro(error?.message || 'E-mail ou senha inválidos');
+    }
   };
 
   return (
