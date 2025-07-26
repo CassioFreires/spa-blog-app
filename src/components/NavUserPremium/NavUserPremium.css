@@ -1,9 +1,0 @@
-.user-dropdown-trigger:hover {
-  text-shadow: 0 0 4px rgba(13, 202, 240, 0.6);
-}
-
-.dropdown-menu {
-  border-radius: 0.75rem;
-  min-width: 180px;
-  overflow: hidden;
-}
