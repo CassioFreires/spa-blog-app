@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Container from '../../../components/Container/Container.components';
 import './Signin.css';
-import AuthService from '../../../services/auth/signin';
+import AuthService from '../../../services/auth-service';
+import { useAuth } from '../../../context/AuthContext';
 
 function SigninPage() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [form, setForm] = useState({ email: '', senha: '' });
   const [erro, setErro] = useState('');
   const authService = new AuthService();
@@ -16,16 +18,19 @@ function SigninPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('teste')
-      await authService.signin(form.email, form.senha)
-    
-    // Simulação de login
-    // if (form.email === 'admin@blog.com' && form.senha === '123456') {
-      
-    //   navigate('/painel/perfil'); // redireciona para home ou dashboard
-    // } else {
-    //   setErro('E-mail ou senha inválidos');
-    // }
+    try {
+      const result = await authService.signin(form.email, form.senha);
+      const user = result.result.user;
+      localStorage.setItem('token', result.token);
+      login(user); 
+
+
+      login(user); // Atualiza contexto
+      navigate('/painel', { replace: true }); // Redireciona para painel sem deixar login no histórico
+    } catch (error: any) {
+      setErro(error.message || 'Usuário ou senha está inválido');
+      setTimeout(() => setErro(''), 5000); // Limpa erro após 5 segundos
+    }
   };
 
   return (
@@ -75,7 +80,7 @@ function SigninPage() {
 
               <div className="text-center mt-3">
                 <small className="text-secondary">
-                  Ainda não tem conta? <a href="/cadastra-se">Cadastra-se</a>
+                  Ainda não tem conta? <Link to="/cadastra-se">Cadastra-se</Link>
                 </small>
               </div>
             </form>

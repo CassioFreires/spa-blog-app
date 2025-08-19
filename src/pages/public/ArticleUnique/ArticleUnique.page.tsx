@@ -1,55 +1,52 @@
-import { useParams, useNavigate } from 'react-router-dom';
-import { artigos } from '../../../data/artigos.mocks';
-import Container from '../../../components/Container/Container.components';
-import './ArticleUnique.css'
+import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import Container from "../../../components/Container/Container.components";
+import PostService from "../../../services/posts-service";
+import type { IArticle } from "../../../interfaces/article";
+import { LoaderSocial } from "../../../components/LoaderSocial/LoaderSocial";
+import { NotFound } from "../../../components/NotFound/NotFound";
+import { ArticleContent } from "../../../components/ArticleContent/ArticleContent";
+import "./ArticleUnique.css";
 
-function ArticleUniquePage() {
+const postService = new PostService();
+
+const ArticleUniquePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const artigo = artigos.find((item) => item.id === Number(id));
+  const [article, setArticle] = useState<IArticle | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!artigo) {
-    return (
-      <Container>
-        <div className="text-center text-danger mt-5">
-          <i className="bi bi-exclamation-triangle-fill fs-1 mb-3"></i>
-          <h2>Artigo não encontrado.</h2>
-        </div>
-      </Container>
-    );
-  }
+  const fetchArticle = async (id: string) => {
+    setLoading(true);
+    try {
+      const result = await postService.getById(id);
+      setArticle(result.post.data);
+    } catch (error: any) {
+      console.error("Erro ao buscar artigo:", error.response?.data || error.message);
+      setArticle(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (id) fetchArticle(id);
+  }, [id]);
+
+  if (loading) return <Container><LoaderSocial /></Container>;
+  if (!article) return <Container><NotFound /></Container>;
 
   return (
     <Container>
-      <article className="article-page fade-in pt-5">
-        <button onClick={() => navigate(-1)} className="btn btn-outline-secondary mb-4">
+      <article className="article-social-page">
+        <button className="btn btn-back-social mb-4" onClick={() => navigate(-1)}>
           <i className="bi bi-arrow-left me-2"></i> Voltar
         </button>
 
-        <header className="mb-4 text-center">
-          <h1 className="display-5 fw-bold mb-2">{artigo.title}</h1>
-          <p className="text-muted">
-            <i className="bi bi-tag me-1"></i> {artigo.category}
-          </p>
-        </header>
-
-        <img
-          src={artigo.image}
-          alt={`Imagem de ${artigo.title}`}
-          className="img-fluid rounded shadow mb-4 animated-image"
-        />
-
-        <section className="fs-5 lh-lg">
-          {artigo.content}
-        </section>
-
-        <footer className="mt-5 text-center text-muted small">
-          <i className="bi bi-clock-history me-1"></i>
-          Última atualização: Julho 2025
-        </footer>
+        <ArticleContent article={article} />
       </article>
     </Container>
   );
-}
+};
 
 export default ArticleUniquePage;

@@ -1,0 +1,1 @@
+export type Role = {role_name:  'admin' | 'editor' | 'user' | 'author'};
