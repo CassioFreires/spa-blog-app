@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import AuthService from '../../../services/auth/signin';
+import AuthService from '../../../services/auth-service';
 
 interface TwoFactorAuthProps {
   qrCode: string; // Base64 string
