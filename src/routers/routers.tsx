@@ -47,8 +47,8 @@ export const router = createBrowserRouter([
                     { index: true, element: <ProfilePage /> },
                     { path: 'perfil', element: <ProfilePage /> },
                     {
-                        path: 'artigos',
-                        element: <ProtectedRoute allowedRoles={['admin', 'editor']} />,
+                        path: 'perfil/meus-artigos',
+                        element: <ProtectedRoute allowedRoles={['admin', 'editor', 'author']} />,
                         children: [{ index: true, element: <MyArticlesPage /> }],
                     },
                     // Depois

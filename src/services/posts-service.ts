@@ -90,4 +90,18 @@ export default class PostService {
       throw error?.response?.data || { message: 'Erro ao buscar posts por categorias' };
     }
   }
+
+  async getAllPostsByUser(token:string) {
+    try {
+      const response = await axios.get(`${this.url}/api/posts/allpostsbyuser`,{
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      // Retorna apenas a parte de dados da resposta
+      return response.data;
+    } catch (error: any) {
+      throw error?.response?.data || { message: 'Erro ao buscar todos os posts do usuário' };
+    }
+  }
 }
