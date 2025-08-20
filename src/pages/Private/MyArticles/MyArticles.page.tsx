@@ -89,7 +89,9 @@ function MyArticlesPage() {
                   <td>{artigo.title}</td>
                   <td>{artigo.createAt ? new Date(artigo.createAt).toLocaleDateString() : 'N/A'}</td>
                   <td>
-                    <button className="btn btn-sm btn-outline-secondary me-2">Editar</button>
+                    <button className="btn btn-sm btn-outline-secondary me-2">
+                      <Link to={`editar/${artigo.id}`}>Editar</Link>
+                    </button>
                     <button className="btn btn-sm btn-outline-danger">Excluir</button>
                   </td>
                 </tr>

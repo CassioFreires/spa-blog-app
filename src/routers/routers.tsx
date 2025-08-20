@@ -16,6 +16,7 @@ import ArticleForCategory from '../pages/public/ArticleForCategory/ArticleForCat
 import { ProtectedRoute } from '../components/ProtectedRouter/ProtectedRoute';
 import EditProfilePage from '../pages/Private/EditProfile/EditProfile';
 import NotFoundPage from '../pages/public/NotFoundPage/NotFoundPage';
+import EditMyArticles from '../pages/Private/EditMyArticles/EditMyArticles';
 
 export const router = createBrowserRouter([
     {
@@ -51,7 +52,11 @@ export const router = createBrowserRouter([
                         element: <ProtectedRoute allowedRoles={['admin', 'editor', 'author']} />,
                         children: [{ index: true, element: <MyArticlesPage /> }],
                     },
-                    // Depois
+                    {
+                     path: 'perfil/meus-artigos/editar/:id',
+                    //  element
+                    children: [{index: true, element: <EditMyArticles />} ]   
+                    },
                     {
                         path: 'perfil/editar',
                         element: <ProtectedRoute allowedRoles={['admin', 'author', 'editor']} />,
