@@ -30,19 +30,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = (userFromApi: any, token: string) => {
-    const userMapped = {
-      ...userFromApi,
-      role: {
-        role_id: userFromApi.role_id,
-        role_name: userFromApi.role_name,
-        role_description: userFromApi.role_description
-      }
-    };
-
-    localStorage.setItem('user', JSON.stringify(userMapped));
+    localStorage.setItem('user', JSON.stringify(userFromApi));
     localStorage.setItem('token', token);
 
-    setUser(userMapped);
+    setUser(userFromApi);
     setToken(token);
   };
 
