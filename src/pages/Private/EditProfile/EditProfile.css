@@ -1,0 +1,20 @@
+.edit-perfil-page {
+  display: flex;
+  justify-content: center;
+  padding-top: 2rem;
+}
+
+.edit-perfil-page .card {
+  max-width: 600px;
+  width: 100%;
+  border-radius: 1.2rem;
+}
+
+.edit-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}

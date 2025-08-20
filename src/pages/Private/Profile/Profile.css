@@ -1,6 +1,27 @@
-.perfil-page .perfil-avatar {
-  width: 100px;
-  height: 100px;
+.perfil-page {
+  display: flex;
+  justify-content: center;
+  padding-top: 2rem;
+}
+
+.perfil-card {
+  max-width: 600px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  background: #fff;
+}
+
+.perfil-banner {
+  height: 150px;
+  background: linear-gradient(135deg, #6f42c1, #d63384);
+}
+
+.perfil-avatar {
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   object-fit: cover;
+  margin-top: -60px;
+  background: #fff;
 }

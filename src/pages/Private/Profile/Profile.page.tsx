@@ -1,27 +1,44 @@
 import Container from '../../../components/Container/Container.components';
-import './Profile.css'
+import './Profile.css';
+import { useAuth } from '../../../context/AuthContext';
+import type { IUser } from '../../../interfaces/user';
+import { Link } from 'react-router-dom';
 
 function ProfilePage() {
-  const user = {
-    nome: 'Cassio Souza',
-    email: 'cassio@email.com',
-    bio: 'Desenvolvedor fullstack apaixonado por tecnologia e inovação.',
-    avatar: 'https://i.pravatar.cc/150?img=11',
-  };
+  const { user } = useAuth() as { user: IUser | null };
+  const avatar= 'https://i.pravatar.cc/150?img=11';
+  if (!user) {
+    return (
+      <Container>
+        <section className="perfil-page text-center py-5">
+          <h2 className="mb-3">Você não está logado</h2>
+          <p className="text-muted">Faça login para acessar seu perfil.</p>
+        </section>
+      </Container>
+    );
+  }
 
   return (
     <Container>
       <section className="perfil-page">
-        <h2 className="mb-4">Meu Perfil</h2>
-        <div className="card shadow-sm p-4 d-flex flex-row align-items-center gap-4">
-          <img src={user.avatar} alt={user.nome} className="perfil-avatar" />
-          <div>
-            <h4>{user.nome}</h4>
-            <p className="text-secondary">{user.email}</p>
-            <p>{user.bio}</p>
-            <button className="btn btn-outline-primary btn-sm mt-2">
+        <div className="card perfil-card shadow-sm p-4">
+          {/* Capa */}
+          <div className="perfil-banner rounded-top"></div>
+
+          {/* Avatar e informações */}
+          <div className="d-flex flex-column align-items-center text-center mt-n5">
+            <img
+              src={avatar}
+              alt={user.name}
+              className="perfil-avatar border border-3 border-white shadow-sm"
+            />
+            <h3 className="mt-3">{user.name}</h3>
+            <p className="text-secondary mb-1">{user.email}</p>
+            {user.bio && <p className="text-muted small">{user.bio}</p>}
+
+            <Link to={`editar`} >
               Editar Perfil
-            </button>
+            </Link>
           </div>
         </div>
       </section>

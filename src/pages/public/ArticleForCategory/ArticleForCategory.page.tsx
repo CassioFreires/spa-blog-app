@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Container from '../../../components/Container/Container.components';
 import PostService from '../../../services/posts-service';
 import type { IPost } from '../../../interfaces/post';
+import { useAuth } from '../../../context/AuthContext';
+import { useCallback } from 'react';
 
 function ArticleForCategory() {
   const { slug } = useParams<{ slug: string }>();
@@ -11,6 +13,9 @@ function ArticleForCategory() {
   const [posts, setPosts] = useState<IPost[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>('');
+
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (!slug) return;
@@ -33,6 +38,19 @@ function ArticleForCategory() {
     fetchPosts();
   }, [slug]);
 
+
+  const handleReadMore = useCallback(
+    (id: number) => {
+      if (!isAuthenticated) {
+        setMessage('Você precisa estar autenticado para acessar este conteúdo. Redirecionando para login...');
+        setTimeout(() => navigate('/login'), 4000);
+      } else {
+        navigate(`/artigos/${id}`);
+      }
+    },
+    [isAuthenticated, navigate]
+  );
+
   return (
     <Container>
       <section className="pt-5">
@@ -42,6 +60,9 @@ function ArticleForCategory() {
 
         <h1 className="display-5 mb-4">Categoria: {slug}</h1>
 
+        {/* Renderiza mensagem de autenticação */}
+        {message && <p className="alert alert-warning">{message}</p>}
+
         {loading && <p>Carregando artigos...</p>}
         {error && <p className="text-danger">{error}</p>}
 
@@ -50,7 +71,7 @@ function ArticleForCategory() {
         )}
 
         {!loading && !error && posts.length > 0 && (
-          <div className="row g-4">
+          <div className="row g-4 mb-5">
             {posts.map((post) => (
               <div className="col-md-6 col-lg-4" key={post.id}>
                 <div className="card h-100 shadow-sm">
@@ -60,9 +81,12 @@ function ArticleForCategory() {
                   <div className="card-body d-flex flex-column">
                     <h5>{post.title}</h5>
                     <p className="flex-grow-1">{post.content.substring(0, 90)}...</p>
-                    <a href={`/artigos/${post.id}`} className="btn btn-primary mt-auto">
+                    <button
+                      onClick={() => handleReadMore(post.id)}
+                      className="btn btn-gradient mt-auto fw-bold"
+                    >
                       Ler mais
-                    </a>
+                    </button>
                   </div>
                 </div>
               </div>
