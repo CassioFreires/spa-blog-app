@@ -14,6 +14,8 @@ import ProfilePage from '../pages/Private/Profile/Profile.page';
 import MyArticlesPage from '../pages/Private/MyArticles/MyArticles.page';
 import ArticleForCategory from '../pages/public/ArticleForCategory/ArticleForCategory.page';
 import { ProtectedRoute } from '../components/ProtectedRouter/ProtectedRoute';
+import EditProfilePage from '../pages/Private/EditProfile/EditProfile';
+import NotFoundPage from '../pages/public/NotFoundPage/NotFoundPage';
 
 export const router = createBrowserRouter([
     {
@@ -30,6 +32,7 @@ export const router = createBrowserRouter([
             { path: 'contato', element: <ContactPage /> },
             { path: 'login', element: <SigninPage /> },
             { path: 'cadastra-se', element: <SignupPage /> },
+            {path: '*', element: <NotFoundPage />}
         ],
     },
 
@@ -41,14 +44,22 @@ export const router = createBrowserRouter([
             {
                 element: <PrivateLayout />,
                 children: [
-                    { index: true, element: <ProfilePage /> }, 
+                    { index: true, element: <ProfilePage /> },
                     { path: 'perfil', element: <ProfilePage /> },
                     {
                         path: 'artigos',
                         element: <ProtectedRoute allowedRoles={['admin', 'editor']} />,
                         children: [{ index: true, element: <MyArticlesPage /> }],
+                    },
+                    // Depois
+                    {
+                        path: 'perfil/editar',
+                        element: <ProtectedRoute allowedRoles={['admin', 'author', 'editor']} />,
+                        children: [{ index: true, element: <EditProfilePage /> }]
+                    },
+                    {
+                        path: '*', element: <NotFoundPage />
                     }
-                   
                 ],
             },
         ],

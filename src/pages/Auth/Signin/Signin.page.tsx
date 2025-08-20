@@ -22,11 +22,11 @@ function SigninPage() {
       const result = await authService.signin(form.email, form.senha);
       const user = result.result.user;
       localStorage.setItem('token', result.token);
-      login(user); 
+      login(user, result.token); 
 
 
-      login(user); // Atualiza contexto
-      navigate('/painel', { replace: true }); // Redireciona para painel sem deixar login no histórico
+      login(user, result.token); // Atualiza contexto
+      navigate('/painel/perfil', { replace: true });
     } catch (error: any) {
       setErro(error.message || 'Usuário ou senha está inválido');
       setTimeout(() => setErro(''), 5000); // Limpa erro após 5 segundos
