@@ -1,23 +1,66 @@
 import Container from '../../../components/Container/Container.components';
 import { Link } from 'react-router-dom';
 import './MyArticles.css'
-
-const meusArtigos = [
-  {
-    id: 1,
-    title: 'Como criar um blog do zero com React',
-    status: 'Publicado',
-    createdAt: '2024-06-01',
-  },
-  {
-    id: 2,
-    title: '5 dicas de performance com Node.js',
-    status: 'Rascunho',
-    createdAt: '2024-06-10',
-  },
-];
+import { useEffect, useState } from 'react';
+import type { IPost } from '../../../interfaces/post';
+import PostService from '../../../services/posts-service';
+import { useAuth } from '../../../context/AuthContext';
 
 function MyArticlesPage() {
+  const [posts, setPosts] = useState<IPost[]>([]); // Muda o estado para um array vazio
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const {user, token} = useAuth()
+  // Instância do serviço para usar na requisição
+  const postService = new PostService();
+
+  useEffect(() => {
+    // Função assíncrona para buscar os posts
+    const fetchPosts = async () => {
+      try {
+        setLoading(true);
+        // Chama a API para obter os posts do usuário.
+        const response = await postService.getAllPostsByUser(String(token));
+        
+        if (response && response.data) {
+          // Usa os dados da API para atualizar o estado
+          setPosts(response.data);
+          setError(null);
+        } else {
+          setPosts([]);
+          setError(response.message || 'Nenhum artigo encontrado.');
+        }
+      } catch (err: any) {
+        console.error('Erro ao buscar artigos:', err);
+        setError(err.message || 'Erro ao carregar os artigos. Tente novamente.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchPosts();
+  }, []);
+
+  if (loading) {
+    return (
+      <Container>
+        <div className="text-center mt-5">
+          <p>Carregando artigos...</p>
+        </div>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container>
+        <div className="text-center mt-5">
+          <p className="text-danger">{error}</p>
+        </div>
+      </Container>
+    );
+  }
+
   return (
     <Container>
       <section className="my-articles-page">
@@ -28,33 +71,32 @@ function MyArticlesPage() {
           </Link>
         </div>
 
-        <table className="table table-hover">
-          <thead>
-            <tr>
-              <th>Título</th>
-              <th>Status</th>
-              <th>Criado em</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {meusArtigos.map((artigo) => (
-              <tr key={artigo.id}>
-                <td>{artigo.title}</td>
-                <td>
-                  <span className={`badge bg-${artigo.status === 'Publicado' ? 'success' : 'secondary'}`}>
-                    {artigo.status}
-                  </span>
-                </td>
-                <td>{artigo.createdAt}</td>
-                <td>
-                  <button className="btn btn-sm btn-outline-secondary me-2">Editar</button>
-                  <button className="btn btn-sm btn-outline-danger">Excluir</button>
-                </td>
+        {posts.length === 0 ? (
+          <p className="text-center">Você ainda não tem artigos. Comece a escrever um!</p>
+        ) : (
+          <table className="table table-hover">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Status</th>
+                <th>Criado em</th>
+                <th>Ações</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {posts.map((artigo) => (
+                <tr key={artigo.id}>
+                  <td>{artigo.title}</td>
+                  <td>{artigo.createAt ? new Date(artigo.createAt).toLocaleDateString() : 'N/A'}</td>
+                  <td>
+                    <button className="btn btn-sm btn-outline-secondary me-2">Editar</button>
+                    <button className="btn btn-sm btn-outline-danger">Excluir</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </section>
     </Container>
   );

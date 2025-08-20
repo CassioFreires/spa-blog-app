@@ -7,7 +7,7 @@ function Sidebar() {
       <ul className="nav flex-column">
         <li className="nav-item"><Link to="/painel" className="nav-link text-white">Dashboard</Link></li>
         <li className="nav-item"><Link to="/painel/perfil" className="nav-link text-white">Perfil</Link></li>
-        <li className="nav-item"><Link to="/painel/artigos" className="nav-link text-white">Meus Artigos</Link></li>
+        <li className="nav-item"><Link to="/painel/perfil/meus-artigos" className="nav-link text-white">Meus Artigos</Link></li>
         <li className="nav-item mt-3"><Link to="/" className="btn btn-sm btn-outline-light">Sair</Link></li>
       </ul>
     </aside>
