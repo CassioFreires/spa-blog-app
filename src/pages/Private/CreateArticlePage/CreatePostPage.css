@@ -1,0 +1,140 @@
+/* CreatePostPage.css */
+
+/* Reset e base */
+.create-article-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  font-family: 'Inter', sans-serif;
+}
+
+/* Header */
+.header-actions h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.header-actions .btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Form Groups */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Inputs e textarea */
+.form-control {
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  border: 1.5px solid #d1d5db;
+  font-size: 1rem;
+  transition: all 0.2s;
+  outline: none;
+}
+
+.form-control:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+/* Textarea ajustado */
+textarea.form-control {
+  resize: vertical;
+  min-height: 150px;
+  font-family: inherit;
+}
+
+/* Select customizado */
+select.form-control {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2210%22%20height%3D%227%22%20viewBox%3D%220%200%2010%207%22%20xmlns%3D%22http://www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M0%200l5%207%205-7H0z%22%20fill%3D%22%23333%22/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 10px 7px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+select.form-control:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+/* Placeholder no select */
+select.form-control option[disabled] {
+  color: #999;
+}
+
+/* Mensagens de erro */
+.text-danger {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+}
+
+/* Botões */
+.btn-primary {
+  background-color: #2563eb;
+  border: none;
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-outline-secondary {
+  border: 1.5px solid #6b7280;
+  color: #374151;
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #f3f4f6;
+  border-color: #4b5563;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .create-article-page {
+    padding: 1.5rem;
+  }
+
+  .header-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
