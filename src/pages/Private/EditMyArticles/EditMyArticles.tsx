@@ -3,12 +3,18 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import Container from '../../../components/Container/Container.components';
 import PostService from '../../../services/posts-service'; // Garanta que o caminho de importação esteja correto
 import type { IPost } from '../../../interfaces/post';
+import { useAuth } from '../../../context/AuthContext';
+import { toast } from 'react-toastify';
+
+
 
 function EditMyArticles() {
   // useParams para pegar o ID da URL
   const { id } = useParams<{ id: string }>();
   // useNavigate para redirecionar o usuário após o update
   const navigate = useNavigate();
+
+  const { user, token } = useAuth()
 
   // Estado para armazenar os dados do post
   const [post, setPost] = useState<IPost | null>(null);
@@ -32,10 +38,18 @@ function EditMyArticles() {
 
       try {
         const response = await postService.getById(id);
-        console.log(response)
+
         if (response && response.post) {
-          setPost(response.post.data);
-          setInitialPost(response.post.data); // Salva a cópia inicial
+          const fetchedPost = Array.isArray(response.post.data) ? response.post.data[0] : response.post.data;
+
+          // Checa se o post pertence ao usuário logado
+          if (fetchedPost.user_id !== user?.id) {
+            setError("Você não tem permissão para acessar este artigo.");
+            setPost(null);
+          } else {
+            setPost(fetchedPost);
+            setInitialPost(fetchedPost); // Salva a cópia inicial
+          }
         } else {
           setError("Artigo não encontrado.");
         }
@@ -46,9 +60,10 @@ function EditMyArticles() {
         setLoading(false);
       }
     };
-    
+
     fetchPost();
-  }, [id]); 
+  }, [id, user?.id]);
+
 
   // Função para lidar com a mudança nos campos do formulário
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -61,15 +76,23 @@ function EditMyArticles() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!post || !id) return;
-    
+
     try {
       setSaving(true);
-      await postService.update(id, post);
-      alert('Artigo atualizado com sucesso!');
-      navigate('/painel/artigos');
+      await postService.updatePostByUser(String(token), post);
+
+      // Mensagem de sucesso com toast
+      toast.success('Artigo atualizado com sucesso!');
+
+      // Redireciona após 1.2s para o usuário ver o toast
+      setTimeout(() => {
+        navigate(`/painel/perfil/meus-artigos`);
+      }, 1200);
+
     } catch (err: any) {
       console.error('Erro ao atualizar artigo:', err);
-      setError(err.message || "Erro ao salvar o artigo. Tente novamente.");
+      // Mensagem de erro com toast
+      toast.error(err.message || "Erro ao salvar o artigo. Tente novamente.");
     } finally {
       setSaving(false);
     }
@@ -79,8 +102,8 @@ function EditMyArticles() {
   const hasChanged = () => {
     if (!initialPost || !post) return false;
     return post.title !== initialPost.title ||
-           post.subtitle !== initialPost.subtitle ||
-           post.content !== initialPost.content;
+      post.subtitle !== initialPost.subtitle ||
+      post.content !== initialPost.content;
   };
 
   if (loading) {
@@ -99,6 +122,7 @@ function EditMyArticles() {
     );
   }
 
+
   if (!post) {
     return (
       <Container>
@@ -116,42 +140,42 @@ function EditMyArticles() {
             Voltar para Meus Artigos
           </Link>
         </div>
-        
+
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="title" className="form-label">Título</label>
-            <input 
-              type="text" 
-              className="form-control" 
-              id="title" 
-              name="title" 
-              value={post.title} 
-              onChange={handleChange} 
-              required 
+            <input
+              type="text"
+              className="form-control"
+              id="title"
+              name="title"
+              value={post.title}
+              onChange={handleChange}
+              required
             />
           </div>
           <div className="mb-3">
             <label htmlFor="subtitle" className="form-label">Subtítulo</label>
-            <input 
-              type="text" 
-              className="form-control" 
-              id="subtitle" 
-              name="subtitle" 
-              value={post.subtitle} 
-              onChange={handleChange} 
-              required 
+            <input
+              type="text"
+              className="form-control"
+              id="subtitle"
+              name="subtitle"
+              value={post.subtitle}
+              onChange={handleChange}
+              required
             />
           </div>
           <div className="mb-3">
             <label htmlFor="content" className="form-label">Conteúdo</label>
-            <textarea 
-              className="form-control" 
-              id="content" 
-              name="content" 
-              rows={10} 
-              value={post.content} 
-              onChange={handleChange} 
-              required 
+            <textarea
+              className="form-control"
+              id="content"
+              name="content"
+              rows={10}
+              value={post.content}
+              onChange={handleChange}
+              required
             ></textarea>
           </div>
           <button type="submit" className="btn btn-primary" disabled={saving || !hasChanged()}>

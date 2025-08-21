@@ -5,5 +5,6 @@ export interface IPost {
   content: string;
   image?: string;
   user_name: string;
+  last_name:string;
   createAt: string;
 }

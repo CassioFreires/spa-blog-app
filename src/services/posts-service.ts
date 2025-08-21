@@ -64,7 +64,7 @@ export default class PostService {
 
   async update(id: string | number, post: Partial<Post>) {
     try {
-      const response = await axios.put(`${this.url}/api/posts/${id}`, post);
+      const response = await axios.patch(`${this.url}/api/posts/${id}`, post);
       return response.data;
     } catch (error: any) {
       console.error(error);
@@ -91,9 +91,9 @@ export default class PostService {
     }
   }
 
-  async getAllPostsByUser(token:string) {
+  async getAllPostsByUser(token: string) {
     try {
-      const response = await axios.get(`${this.url}/api/posts/allpostsbyuser`,{
+      const response = await axios.get(`${this.url}/api/posts/allpostsbyuser`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -102,6 +102,19 @@ export default class PostService {
       return response.data;
     } catch (error: any) {
       throw error?.response?.data || { message: 'Erro ao buscar todos os posts do usuário' };
+    }
+  }
+
+  async updatePostByUser(token: string, post: Partial<Post>) {
+    try {
+      const response = await axios.patch(`${this.url}/api/posts/updatepostbyuser`, post,  {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      throw error?.response?.data || { message: 'Erro ao tentar  atualizar post do usuário' };
     }
   }
 }
