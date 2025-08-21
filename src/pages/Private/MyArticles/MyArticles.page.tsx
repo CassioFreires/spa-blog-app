@@ -78,8 +78,9 @@ function MyArticlesPage() {
             <thead>
               <tr>
                 <th>Título</th>
-                <th>Status</th>
                 <th>Criado em</th>
+                <th>Autor</th>
+                <th>Conteúdo</th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -88,6 +89,9 @@ function MyArticlesPage() {
                 <tr key={artigo.id}>
                   <td>{artigo.title}</td>
                   <td>{artigo.createAt ? new Date(artigo.createAt).toLocaleDateString() : 'N/A'}</td>
+                  <td>{artigo.user_name}</td>
+                  <td>{artigo.last_name}</td>
+                  <td>{artigo.content.substring(0, 80)}...</td>
                   <td>
                     <button className="btn btn-sm btn-outline-secondary me-2">
                       <Link to={`editar/${artigo.id}`}>Editar</Link>
