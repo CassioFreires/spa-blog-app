@@ -54,7 +54,7 @@ export const router = createBrowserRouter([
                     },
                     {
                      path: 'perfil/meus-artigos/editar/:id',
-                    //  element
+                    element: <ProtectedRoute allowedRoles={['admin', 'editor', 'author']} />,
                     children: [{index: true, element: <EditMyArticles />} ]   
                     },
                     {

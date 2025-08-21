@@ -107,14 +107,27 @@ export default class PostService {
 
   async updatePostByUser(token: string, post: Partial<Post>) {
     try {
-      const response = await axios.patch(`${this.url}/api/posts/updatepostbyuser`, post,  {
+      const response = await axios.patch(`${this.url}/api/posts/updatepostbyuser`, post, {
         headers: {
           Authorization: `Bearer ${token}`
         },
       });
       return response.data;
     } catch (error: any) {
-      throw error?.response?.data || { message: 'Erro ao tentar  atualizar post do usuário' };
+      throw error?.response?.data || { message: 'Erro ao tentar atualizar post do usuário' };
+    }
+  }
+
+  async deletPostByUser(token: string, idPost: number) {
+    try {
+      const response = await axios.delete(`${this.url}/api/posts/deletepostbyuser/${idPost}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      throw error?.response?.data || { message: 'Erro ao tentar deletar post do usuário' };
     }
   }
 }
