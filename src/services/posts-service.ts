@@ -1,4 +1,5 @@
 import axios from 'axios';
+import type { IPost } from '../interfaces/post';
 
 export type Post = {
   id?: number;
@@ -121,6 +122,19 @@ export default class PostService {
   async deletPostByUser(token: string, idPost: number) {
     try {
       const response = await axios.delete(`${this.url}/api/posts/deletepostbyuser/${idPost}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      throw error?.response?.data || { message: 'Erro ao tentar deletar post do usuário' };
+    }
+  }
+
+    async createPostByUser(token: string, post: Partial<IPost>) {
+    try {
+      const response = await axios.post(`${this.url}/api/posts/createpostbyuser`, post,{
         headers: {
           Authorization: `Bearer ${token}`
         },

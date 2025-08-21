@@ -76,7 +76,7 @@ function MyArticlesPage() {
       <section className="my-articles-page">
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h2>Meus Artigos</h2>
-          <Link to="/painel/artigos/novo" className="btn btn-primary">
+          <Link to="/painel/perfil/criar-meu-artigo" className="btn btn-primary">
             + Novo Artigo
           </Link>
         </div>
