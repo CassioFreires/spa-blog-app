@@ -25,7 +25,7 @@ function AboutPage() {
             <h2 className="fw-bold mb-3">O que é este blog?</h2>
             <p className="fs-5 text-secondary">
               Este blog é um projeto criado para compartilhar conteúdos relevantes, práticos e atualizados sobre o mundo da tecnologia.
-              Aqui você encontrará artigos sobre desenvolvimento de software, frameworks modernos, boas práticas, tendências de mercado,
+              Aqui você encontrará postagens sobre desenvolvimento de software, frameworks modernos, boas práticas, tendências de mercado,
               inteligência artificial, mobile, ferramentas úteis e muito mais.
             </p>
 
@@ -37,8 +37,8 @@ function AboutPage() {
               <li><i className="bi bi-check-circle-fill text-primary me-2"></i> Ideal para iniciantes e profissionais</li>
             </ul>
 
-            <a href="/artigos" className="btn btn-primary mt-4">
-              <i className="bi bi-journal-text me-1"></i> Ver artigos
+            <a href="/postagens" className="btn btn-primary mt-4">
+              <i className="bi bi-journal-text me-1"></i> Ver postagens
             </a>
           </div>
         </div>

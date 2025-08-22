@@ -2,7 +2,6 @@ import { createBrowserRouter } from 'react-router-dom';
 import DefaultLayout from '../layouts/DefaultLayout.layout';
 import PrivateLayout from '../layouts/PrivateLayout.layout';
 import HomePage from '../pages/public/Home/Home.page';
-import ArticlePage from '../pages/public/Article/Article.page';
 import ArticleUniquePage from '../pages/public/ArticleUnique/ArticleUnique.page';
 import ServicesPage from '../pages/public/Services/Services.page';
 import CategoryPage from '../pages/public/Category/Category.page';
@@ -18,6 +17,7 @@ import EditProfilePage from '../pages/Private/EditProfile/EditProfile';
 import NotFoundPage from '../pages/public/NotFoundPage/NotFoundPage';
 import EditMyArticles from '../pages/Private/EditMyArticles/EditMyArticles';
 import CreateArticlePage from '../pages/Private/CreateArticlePage/CreateArticlePage';
+import PostPage from '../pages/public/Post/PostPage';
 
 export const router = createBrowserRouter([
     {
@@ -25,8 +25,8 @@ export const router = createBrowserRouter([
         element: <DefaultLayout />,
         children: [
             { path: '/', element: <HomePage /> },
-            { path: 'artigos', element: <ArticlePage /> },
-            { path: 'artigos/:id', element: <ArticleUniquePage /> },
+            { path: 'postagens', element: <PostPage /> },
+            { path: 'postagens/:id', element: <ArticleUniquePage /> },
             { path: 'servicos', element: <ServicesPage /> },
             { path: 'categorias', element: <CategoryPage /> },
             { path: 'categorias/:slug', element: <ArticleForCategory /> },
