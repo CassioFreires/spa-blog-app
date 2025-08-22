@@ -1,14 +1,63 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import './NavBar.css'
 
 function NavBar() {
   const { user, logout } = useAuth();
+
+  const NavLinks = () => (
+    <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+      <li className="nav-item">
+        <Link className="nav-link text-white" to="/">Home</Link>
+      </li>
+      <li className="nav-item">
+        <Link className="nav-link text-white" to="/postagens">Postagens</Link>
+      </li>
+      <li className="nav-item">
+        <Link className="nav-link text-white" to="/categorias">Categorias</Link>
+      </li>
+      <li className="nav-item">
+        <Link className="nav-link text-white" to="/servicos">Serviços</Link>
+      </li>
+      <li className="nav-item">
+        <Link className="nav-link text-white" to="/sobre">Sobre</Link>
+      </li>
+      <li className="nav-item">
+        <Link className="nav-link text-white" to="/contato">Contato</Link>
+      </li>
+    </ul>
+  );
+
+  const UserMenu = () => (
+    user ? (
+      <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li className="nav-item">
+          <Link className="nav-link text-white" to="/painel/perfil">Perfil</Link>
+        </li>
+        <li className="nav-item">
+          <button className="nav-link btn btn-link text-white" onClick={logout}>Sair</button>
+        </li>
+      </ul>
+    ) : (
+      <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li className="nav-item">
+          <Link className="nav-link text-white" to="/login">Login</Link>
+        </li>
+        <li className="nav-item">
+          <Link className="nav-link text-white" to="/cadastra-se">Cadastra-se</Link>
+        </li>
+      </ul>
+    )
+  );
+
   return (
     <header className="navbar navbar-expand-lg navbar-dark bg-dark">
       <nav className="container-fluid">
-        <div className="navbar-brand text-white">
-          <Link to="/" className="text-white text-decoration-none">LOGO</Link>
-        </div>
+        <Link to="/" className="navbar-brand logo d-flex align-items-center">
+          <span className="logo-text">
+            Meu <span className="highlight">Blog</span>
+          </span>
+        </Link>
 
         <button
           className="navbar-toggler"
@@ -23,51 +72,8 @@ function NavBar() {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarNav">
-          {/* Links à esquerda */}
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <Link className="nav-link text-white" to="/">Home</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link text-white" to="/postagens">Postagens</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link text-white" to="/categorias">Categorias</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link text-white" to="/servicos">Serviços</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link text-white" to="/sobre">Sobre</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link text-white" to="/contato">Contato</Link>
-            </li>
-          </ul>
-
-          {/* Login/Cadastro à direita */}
-          {user ? (
-            <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-              {/* Menu para usuário logado, tipo "Perfil", "Sair" */}
-              <li className="nav-item">
-                <Link className="nav-link text-white" to="/painel/perfil">Perfil</Link>
-              </li>
-              <li className="nav-item">
-                <button className="nav-link btn btn-link text-white" onClick={logout}>Sair</button>
-              </li>
-            </ul>
-          ) : (
-            <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <Link className="nav-link text-white" to="/login">Login</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link text-white" to="/cadastra-se">Cadastra-se</Link>
-              </li>
-            </ul>
-          )}
-
-
+          <NavLinks />
+          <UserMenu />
         </div>
       </nav>
     </header>
