@@ -1,34 +1,70 @@
+import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Container from '../../../components/Container/Container.components';
-import './Home.css';
-import { Link } from 'react-router-dom';
-import { useEffect, useState, useCallback } from 'react';
 import PostService from '../../../services/posts-service';
 import { useAuth } from '../../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+
+import Alert from '../../../components/Alert/Alert';
+import Loader from '../../../components/Loader/Loader';
+import PostCard from '../../../components/PostCard/PostCard';
+import Card from '../../../components/Card/Card';
+import type { Post } from '../../../interfaces/post-interface';
+
+import './Home.css';
+
+
 
 function HomePage() {
-    const [posts, setPosts] = useState<any[]>([]);
-    const postService = new PostService();
-    const { isAuthenticated } = useAuth();
+    const [posts, setPosts] = useState<Post[]>([]);
     const [message, setMessage] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const postService = useMemo(() => new PostService(), []);
+    const { isAuthenticated } = useAuth();
     const navigate = useNavigate();
+    const redirectTimeoutRef = useRef<number | null>(null);
 
     useEffect(() => {
-        async function getTopPosts() {
-            const result = await postService.getTop();
-            setPosts(result.posts.data); // pega os posts retornados
-        }
-        getTopPosts();
-    }, []);
+        let active = true;
+
+        (async () => {
+            try {
+                setLoading(true);
+                setError(null);
+
+                const result = await postService.getTop();
+                if (!active) return;
+                setPosts(result.posts.data || []);
+            } catch {
+                if (!active) return;
+                setError('Não foi possível carregar os posts no momento.');
+            } finally {
+                if (active) setLoading(false);
+            }
+        })();
+
+        return () => {
+            active = false;
+            if (redirectTimeoutRef.current) {
+                window.clearTimeout(redirectTimeoutRef.current);
+            }
+        };
+    }, [postService]);
 
     const handleReadMore = useCallback(
         (id: number) => {
             if (!isAuthenticated) {
-                setMessage('Você precisa estar autenticado para acessar este conteúdo. Redirecionando para login...');
-                setTimeout(() => navigate('/login'), 4000);
-            } else {
-                navigate(`/artigos/${id}`);
+                setMessage(
+                    'Você precisa estar autenticado para acessar este conteúdo. Redirecionando para login...'
+                );
+                redirectTimeoutRef.current = window.setTimeout(
+                    () => navigate('/login'),
+                    4000
+                );
+                return;
             }
+            navigate(`/artigos/${id}`);
         },
         [isAuthenticated, navigate]
     );
@@ -44,15 +80,11 @@ function HomePage() {
                     </p>
                 </header>
 
-                {/* Hero section */}
+                {/* Hero */}
                 <section className="hero-section text-center text-light mb-5">
                     <div className="overlay d-flex flex-column justify-content-center align-items-center">
-                        <h1 className="display-3 fw-bold mb-3 animate-title">
-                            Soluções em Tecnologia
-                        </h1>
-                        <p className="lead mb-4">
-                            Desenvolvimento moderno, rápido e personalizado.
-                        </p>
+                        <h1 className="display-3 fw-bold mb-3 animate-title">Soluções em Tecnologia</h1>
+                        <p className="lead mb-4">Desenvolvimento moderno, rápido e personalizado.</p>
                         <Link to="/servicos" className="btn btn-outline-light btn-lg">
                             Conheça os serviços
                         </Link>
@@ -60,55 +92,25 @@ function HomePage() {
                 </section>
 
                 {/* Mensagem de autenticação */}
-                {message && (
-                    <div className="alert alert-warning text-center my-3" role="alert">
-                        {message}
-                    </div>
+                {message && <Alert type="warning">{message}</Alert>}
+
+                {/* Estados de carregamento / erro / vazio */}
+                {loading && <Loader />}
+                {!loading && error && <Alert type="danger">{error}</Alert>}
+                {!loading && !error && posts.length === 0 && (
+                    <p className="text-center text-muted my-5">
+                        Ainda não há posts por aqui. Volte em breve!
+                    </p>
                 )}
 
-                {/* Posts */}
-                <div className="row g-4">
-                    {posts.map((post) => (
-                        <article key={post.id} className="col-md-6 col-lg-4">
-                            <div className="card shadow-sm h-100 border-0">
-                                <img
-                                    src={
-                                        post.image ||
-                                        `https://source.unsplash.com/400x200/?${post.category_name}`
-                                    }
-                                    className="card-img-top"
-                                    alt={post.title}
-                                />
-                                <div className="card-body d-flex flex-column">
-                                    <span className="badge bg-primary mb-2">
-                                        {post.category_name}
-                                    </span>
-                                    <h5 className="card-title">{post.title}</h5>
-                                    <p className="text-muted small mb-2">
-                                        Por {post.user_name} |{' '}
-                                        {new Date(post.createAt).toLocaleDateString('pt-BR')}
-                                    </p>
-                                    <p className="card-text flex-grow-1">
-                                        {post.content.length > 100
-                                            ? post.content.substring(0, 100) + '...'
-                                            : post.content}
-                                    </p>
-                                    <p className="text-secondary small fst-italic mb-3">
-                                        {post.category_description.length > 60
-                                            ? post.category_description.substring(0, 60) + '...'
-                                            : post.category_description}
-                                    </p>
-                                    <button
-                                        onClick={() => handleReadMore(post.id)}
-                                        className="btn btn-gradient mt-auto fw-bold"
-                                    >
-                                        Ler mais
-                                    </button>
-                                </div>
-                            </div>
-                        </article>
-                    ))}
-                </div>
+                {/* Lista de posts */}
+                {!loading && !error && posts.length > 0 && (
+                    <div className="row g-4">
+                        {posts.map((post) => (
+                            <PostCard key={post.id} post={post} onReadMore={handleReadMore} />
+                        ))}
+                    </div>
+                )}
             </section>
 
             {/* Seção de serviços */}
@@ -116,39 +118,33 @@ function HomePage() {
                 <h2 className="text-center mb-4">Serviços de Desenvolvimento</h2>
                 <div className="row g-4">
                     <div className="col-md-4">
-                        <div className="card h-100 text-center p-4 shadow-sm">
+                        <Card className="text-center p-4">
                             <i className="bi bi-code-slash display-4 text-primary mb-3"></i>
                             <h5>Desenvolvimento Web</h5>
-                            <p>
-                                Sites, blogs e sistemas web modernos, com foco em performance e SEO.
-                            </p>
-                        </div>
+                            <p>Sites, blogs e sistemas web modernos, com foco em performance e SEO.</p>
+                        </Card>
                     </div>
                     <div className="col-md-4">
-                        <div className="card h-100 text-center p-4 shadow-sm">
+                        <Card className="text-center p-4">
                             <i className="bi bi-phone display-4 text-success mb-3"></i>
                             <h5>Aplicações Responsivas</h5>
-                            <p>
-                                Interfaces que se adaptam a qualquer dispositivo com ótima usabilidade.
-                            </p>
-                        </div>
+                            <p>Interfaces que se adaptam a qualquer dispositivo com ótima usabilidade.</p>
+                        </Card>
                     </div>
                     <div className="col-md-4">
-                        <div className="card h-100 text-center p-4 shadow-sm">
+                        <Card className="text-center p-4">
                             <i className="bi bi-cloud-arrow-down display-4 text-info mb-3"></i>
                             <h5>APIs e Integrações</h5>
-                            <p>
-                                Criação de APIs RESTful e integrações com bancos de dados e sistemas.
-                            </p>
-                        </div>
+                            <p>Criação de APIs RESTful e integrações com bancos de dados e sistemas.</p>
+                        </Card>
                     </div>
                 </div>
             </section>
 
             {/* Call to action */}
-            <section className="text-center py-5">
+            <section className="text-center py-5 d-flex flex-column align-items-center">
                 <h3 className="mb-3">Tem um projeto em mente?</h3>
-                <Link to="/contato" className="btn btn-primary btn-lg">
+                <Link to="/contato" className="btn btn-primary btn-lg w-25 justify-content-center">
                     Entre em contato
                 </Link>
             </section>
