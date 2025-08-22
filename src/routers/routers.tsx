@@ -9,15 +9,15 @@ import ContactPage from '../pages/public/Contact/Contact.page';
 import SigninPage from '../pages/Auth/Signin/Signin.page';
 import SignupPage from '../pages/Auth/Signup/Signup.page';
 import ProfilePage from '../pages/Private/Profile/Profile.page';
-import MyArticlesPage from '../pages/Private/MyArticles/MyArticles.page';
 import { ProtectedRoute } from '../components/ProtectedRouter/ProtectedRoute';
 import EditProfilePage from '../pages/Private/EditProfile/EditProfile';
 import NotFoundPage from '../pages/public/NotFoundPage/NotFoundPage';
-import EditMyArticles from '../pages/Private/EditMyArticles/EditMyArticles';
-import CreateArticlePage from '../pages/Private/CreateArticlePage/CreateArticlePage';
 import PostPage from '../pages/public/Post/PostPage';
 import PostDetailPage from '../pages/public/PostDetailPage/PostDetailPage';
 import PostPorCategory from '../pages/public/PostPorCategory/PostPorCategory';
+import MyPostsPage from '../pages/Private/MyPosts/MyPosts';
+import CreateMyPostPage from '../pages/Private/CreateMyPostPage/CreateMyPost';
+import EditeMyPostPage from '../pages/Private/EditeMyPost/EditeMyPost';
 
 export const router = createBrowserRouter([
     {
@@ -49,20 +49,20 @@ export const router = createBrowserRouter([
                     { index: true, element: <ProfilePage /> },
                     { path: 'perfil', element: <ProfilePage /> },
                     {
-                        path: 'perfil/criar-meu-artigo',
+                        path: 'perfil/add-postagem',
                         element: <ProtectedRoute allowedRoles={['admin', 'editor', 'author']} />,
-                        children: [{index: true, element: <CreateArticlePage />}]
+                        children: [{index: true, element: <CreateMyPostPage />}]
                         
                     },
                     {
-                        path: 'perfil/meus-artigos',
+                        path: 'perfil/minhas-postagens',
                         element: <ProtectedRoute allowedRoles={['admin', 'editor', 'author']} />,
-                        children: [{ index: true, element: <MyArticlesPage /> }],
+                        children: [{ index: true, element: <MyPostsPage /> }],
                     },
                     {
-                     path: 'perfil/meus-artigos/editar/:id',
+                     path: 'perfil/minhas-postagens/editar/:id',
                     element: <ProtectedRoute allowedRoles={['admin', 'editor', 'author']} />,
-                    children: [{index: true, element: <EditMyArticles />} ]   
+                    children: [{index: true, element: <EditeMyPostPage />} ]   
                     },
                     {
                         path: 'perfil/editar',

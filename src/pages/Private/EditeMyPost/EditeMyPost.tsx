@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 
 
 
-function EditMyArticles() {
+export default function EditeMyPostPage() {
   // useParams para pegar o ID da URL
   const { id } = useParams<{ id: string }>();
   // useNavigate para redirecionar o usuário após o update
@@ -86,7 +86,7 @@ function EditMyArticles() {
 
       // Redireciona após 1.2s para o usuário ver o toast
       setTimeout(() => {
-        navigate(`/painel/perfil/meus-artigos`);
+        navigate(`/painel/perfil/minhas-postagens`);
       }, 1200);
 
     } catch (err: any) {
@@ -136,7 +136,7 @@ function EditMyArticles() {
       <section className="my-articles-page">
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h2>Editar Artigo</h2>
-          <Link to="/painel/perfil/meus-artigos" className="btn btn-secondary">
+          <Link to="/painel/perfil/minhas-postagens" className="btn btn-secondary">
             Voltar para Meus Artigos
           </Link>
         </div>
@@ -186,5 +186,3 @@ function EditMyArticles() {
     </Container>
   );
 }
-
-export default EditMyArticles;

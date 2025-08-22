@@ -9,6 +9,7 @@ import { NotFound } from "../../../components/NotFound/NotFound";
 import PostContent from "../../../components/PostContent/PostContent";
 import Section from "../../../components/Section/Section";
 import BackButton from "../../../components/BackButton/BackButton";
+import './PostDetailPage.css'
 
 export default function PostDetailPage() {
   const { id } = useParams<{ id: string }>();

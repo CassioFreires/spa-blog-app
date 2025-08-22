@@ -10,7 +10,7 @@ import type { ICategory } from "../../../interfaces/category"; // ajuste o path 
 import { useAuth } from "../../../context/AuthContext";
 import { toast } from "react-toastify";
 import { FaPaperPlane, FaTimes } from "react-icons/fa";
-import "./CreatePostPage.css";
+import "./CreateMyPost.css";
 
 // --- Schema de validação com Zod ---
 const createPostSchema = z.object({
@@ -22,7 +22,7 @@ const createPostSchema = z.object({
 
 type CreatePostFormData = z.infer<typeof createPostSchema>;
 
-function CreateArticlePage() {
+export default function CreateMyPostPage() {
   const navigate = useNavigate();
   const { user, token } = useAuth();
 
@@ -88,7 +88,7 @@ function CreateArticlePage() {
       });
 
       toast.success("Artigo criado com sucesso!");
-      navigate("/painel/perfil/meus-artigos");
+      navigate("/painel/perfil/minhas-postagens");
     } catch (err: any) {
       console.error("Erro ao criar artigo:", err);
       toast.error(err?.message || "Erro ao criar o artigo. Tente novamente.");
@@ -222,4 +222,3 @@ function CreateArticlePage() {
   );
 }
 
-export default CreateArticlePage;
