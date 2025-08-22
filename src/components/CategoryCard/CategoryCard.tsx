@@ -1,19 +1,27 @@
-import { Link } from "react-router-dom";
-import type { ICategoryCardProps } from "../../interfaces/categoryCard";
+// src/components/CategoryCard/CategoryCard.tsx
+import type { ReactNode } from "react";
+import './CategoryCard.css';
 
-const CategoryCard: React.FC<ICategoryCardProps> = ({ name, description, slug, icon }) => {
+type CategoryCardProps = {
+  title: string;
+  description?: string;
+  icon?: string;
+  children?: ReactNode;
+  onClick?: () => void;
+};
+
+export default function CategoryCard({ title, description, icon, children, onClick }: CategoryCardProps) {
   return (
-    <div className="col-md-6 col-lg-4 fade-in">
-      <div className="card text-center shadow-sm p-4 categoria-card h-100 d-flex flex-column">
-        <i className={`bi ${icon} display-4 text-primary mb-3`}></i>
-        <h5 className="fw-bold">{name}</h5>
-        <p className="text-secondary flex-grow-1">{description || "Descrição indisponível"}</p>
-        <Link to={`/categorias/${slug}`} className="btn btn-outline-primary mt-2">
-          Ver postagens
-        </Link>
+    <div
+      className="category-card-wrapper"
+      onClick={onClick}
+    >
+      <div className="category-card shadow-sm h-100 text-center p-4 rounded cursor-pointer fade-in">
+        {icon && <i className={`bi ${icon} display-4 mb-3 icon-category`}></i>}
+        <h5 className="fw-bold">{title}</h5>
+        {description && <p className="text-muted small">{description}</p>}
+        {children}
       </div>
     </div>
   );
-};
-
-export default CategoryCard;
+}

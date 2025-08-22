@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import CategoriesService from "../../../services/categories-service";
 import CategoryList from "../../../components/CategoryList/CategoryList";
 import type { ICategory } from "../../../interfaces/category";
+import './Category.css'
 
 const categoryService = new CategoriesService();
 
@@ -41,7 +42,7 @@ function CategoryPage() {
 
   return (
     <Container>
-      <section className="categorias-page pt-5">
+      <section className="categorias-page pt-5 mb-5">
         <header className="text-center mb-5 fade-in">
           <h1 className="display-5 fw-bold">Categorias</h1>
           <p className="lead text-secondary">Navegue pelos temas mais relevantes do blog.</p>
