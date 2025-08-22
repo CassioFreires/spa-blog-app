@@ -6,13 +6,19 @@ import { Link } from 'react-router-dom';
 
 function ProfilePage() {
   const { user } = useAuth() as { user: IUser | null };
-  const avatar= 'https://i.pravatar.cc/150?img=11';
+  const avatar = 'https://i.pravatar.cc/150?img=11';
+
   if (!user) {
     return (
       <Container>
-        <section className="perfil-page text-center py-5">
-          <h2 className="mb-3">Você não está logado</h2>
-          <p className="text-muted">Faça login para acessar seu perfil.</p>
+        <section className="profile-container">
+          <div className="profile-not-logged-in animate-fade-in">
+            <h2 className="title-placeholder">Ops!</h2>
+            <p className="subtitle-placeholder">Você precisa fazer login para acessar esta página.</p>
+            <Link to="/login" className="btn-placeholder">
+              Ir para o Login
+            </Link>
+          </div>
         </section>
       </Container>
     );
@@ -20,23 +26,29 @@ function ProfilePage() {
 
   return (
     <Container>
-      <section className="perfil-page">
-        <div className="card perfil-card shadow-sm p-4">
-          {/* Capa */}
-          <div className="perfil-banner rounded-top"></div>
-
-          {/* Avatar e informações */}
-          <div className="d-flex flex-column align-items-center text-center mt-n5">
+      <section className="profile-container">
+        <div className="profile-card animate-card-entry">
+          <div className="profile-header">
             <img
-              src={avatar}
-              alt={user.name}
-              className="perfil-avatar border border-3 border-white shadow-sm"
+              src={user.avatarUrl || avatar}
+              alt={`Avatar de ${user.name}`}
+              className="profile-avatar animate-avatar-entry"
             />
-            <h3 className="mt-3">{user.name}</h3>
-            <p className="text-secondary mb-1">{user.email}</p>
-            {user.bio && <p className="text-muted small">{user.bio}</p>}
+            <h3 className="user-name">{user.name}</h3>
+            <p className="user-email">{user.email}</p>
+          </div>
 
-            <Link to={`editar`} >
+          <div className="profile-bio-box">
+            {user.bio ? (
+              <p className="user-bio">{user.bio}</p>
+            ) : (
+              <p className="no-bio-text">Adicione uma biografia para personalizar seu perfil.</p>
+            )}
+          </div>
+
+          <div className="profile-actions">
+            <Link to={`editar`} className="btn-edit-profile">
+              <i className="bi bi-pencil-square me-2"></i>
               Editar Perfil
             </Link>
           </div>

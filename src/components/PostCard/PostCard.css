@@ -1,0 +1,108 @@
+/* ====================
+   Component: PostCard
+   ==================== */
+
+.card {
+  --bs-card-border-width: 0;
+  --bs-card-spacer-x: 0;
+  --bs-card-spacer-y: 0;
+  background: var(--bs-body-bg);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.card-body .badge {
+  font-size: 0.8rem;
+  padding: 0.4em 0.8em;
+  border-radius: 50px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.card:hover .badge {
+  transform: scale(1.1);
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--bs-heading-color);
+  margin-top: 0.5rem;
+  line-height: 1.3;
+}
+
+.text-muted.small {
+  font-size: 0.85rem;
+  color: #777 !important;
+  margin-bottom: 0.5rem;
+}
+
+.card-text {
+  font-size: 0.95rem;
+  color: var(--bs-body-color);
+  line-height: 1.5;
+}
+
+.card-text.flex-grow-1 {
+  /* This ensures text content expands to fill space */
+  display: -webkit-box;
+  -webkit-line-clamp: 4; /* Limita a 4 linhas */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.text-secondary.small.fst-italic {
+  font-size: 0.8rem;
+  color: #999 !important;
+  margin-top: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ====================
+   Component: Button (from your component library)
+   This is an example, assuming your Button component works with classes.
+   ==================== */
+
+.btn-gradient {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+}
+
+.btn-gradient:hover {
+  background: linear-gradient(135deg, #0056b3, #007bff);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
