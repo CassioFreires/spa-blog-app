@@ -64,7 +64,7 @@ function HomePage() {
                 );
                 return;
             }
-            navigate(`/artigos/${id}`);
+            navigate(`/postagens/${id}`);
         },
         [isAuthenticated, navigate]
     );

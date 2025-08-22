@@ -22,7 +22,7 @@
 
 Este é o **frontend** do projeto Blog MVP, desenvolvido com foco em **clean UI**, **componentização**, **responsividade mobile-first** e **boas práticas de arquitetura com ReactJS**.
 
-Com navegação dinâmica utilizando React Router, o projeto simula uma experiência real de blog, com páginas para artigos, categorias, contato, e muito mais.
+Com navegação dinâmica utilizando React Router, o projeto simula uma experiência real de blog, com páginas para Postagens, categorias, contato, e muito mais.
 
 ---
 
@@ -42,7 +42,7 @@ Com navegação dinâmica utilizando React Router, o projeto simula uma experiê
 ├── assets/ # Imagens, ícones e mídias
 ├── components/ # Componentes reutilizáveis (Navbar, Footer, Cards)
 │ └── NavBar/
-├── pages/ # Páginas do site (Home, Artigos, etc.)
+├── pages/ # Páginas do site (Home, Postagens, etc.)
 │ ├── Home/
 │ └── Contato/
 ├── routers/ # Arquivos de rotas centralizadas
@@ -69,7 +69,7 @@ Abra o navegador e vá para:
 🔗 Navegação e Rotas
 Página	Caminho	Descrição
 Home	/	Página inicial
-Artigos	/artigos	Listagem de artigos
+Postagens	/postagens	Listagem de postagens
 Categorias	/categorias	Filtro por categorias
 Sobre	/sobre	Informações sobre o projeto
 Contato	/contato	Formulário de contato

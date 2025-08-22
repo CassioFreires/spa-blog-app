@@ -45,7 +45,7 @@ function ArticleForCategory() {
         setMessage('Você precisa estar autenticado para acessar este conteúdo. Redirecionando para login...');
         setTimeout(() => navigate('/login'), 4000);
       } else {
-        navigate(`/artigos/${id}`);
+        navigate(`/postagens/${id}`);
       }
     },
     [isAuthenticated, navigate]
@@ -63,7 +63,7 @@ function ArticleForCategory() {
         {/* Renderiza mensagem de autenticação */}
         {message && <p className="alert alert-warning">{message}</p>}
 
-        {loading && <p>Carregando artigos...</p>}
+        {loading && <p>Carregando postagens...</p>}
         {error && <p className="text-danger">{error}</p>}
 
         {!loading && !error && posts.length === 0 && (

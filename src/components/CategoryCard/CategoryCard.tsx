@@ -9,7 +9,7 @@ const CategoryCard: React.FC<ICategoryCardProps> = ({ name, description, slug, i
         <h5 className="fw-bold">{name}</h5>
         <p className="text-secondary flex-grow-1">{description || "Descrição indisponível"}</p>
         <Link to={`/categorias/${slug}`} className="btn btn-outline-primary mt-2">
-          Ver artigos
+          Ver postagens
         </Link>
       </div>
     </div>
