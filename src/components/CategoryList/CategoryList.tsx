@@ -1,20 +1,27 @@
+// src/components/CategoryList/CategoryList.tsx
+import type { ICategory } from "../../interfaces/category";
 import CategoryCard from "../CategoryCard/CategoryCard";
-import type { ICategoryListProps } from "../../interfaces/categoryListProps";
+import { useNavigate } from "react-router-dom";
 
-const CategoryList: React.FC<ICategoryListProps> = ({ categories, iconsMap }) => {
-    return (
-        <div className="row g-4 mb-5">
-            {categories.map((cat: any) => {
-                const icon = iconsMap[cat.slug] || "bi-folder";
-                return <CategoryCard
-                    key={cat.id}
-                    name={cat.name}
-                    description={cat.description}
-                    slug={cat.slug} 
-                    icon={icon} />;
-            })}
-        </div>
-    );
+type CategoryListProps = {
+    categories: ICategory[];
+    iconsMap?: Record<string, string>;
 };
 
-export default CategoryList;
+export default function CategoryList({ categories, iconsMap = {} }: CategoryListProps) {
+    const navigate = useNavigate();
+    return (
+        <div className="row g-4">
+            {categories.map((category) => (
+                <div key={category.id} className="col-md-4 col-lg-3">
+                    <CategoryCard
+                        title={category.name}
+                        description={category.description}
+                        icon={iconsMap[category.slug?.toLowerCase()] || "bi-folder"}
+                        onClick={() => navigate(`/categorias/${category.slug}`)}
+                    />
+                </div>
+            ))}
+        </div>
+    );
+}
