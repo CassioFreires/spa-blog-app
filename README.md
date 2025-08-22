@@ -123,5 +123,5 @@ Veja o arquivo LICENSE para mais detalhes.
 
 ---
 
-Se quiser, posso adaptar isso ao seu projeto real com prints, badges dinâmicas, integração com backend, ou até criar um tema escuro. Deseja algo mais personalizado?
+
 
