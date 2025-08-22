@@ -10,7 +10,6 @@ import SigninPage from '../pages/Auth/Signin/Signin.page';
 import SignupPage from '../pages/Auth/Signup/Signup.page';
 import ProfilePage from '../pages/Private/Profile/Profile.page';
 import MyArticlesPage from '../pages/Private/MyArticles/MyArticles.page';
-import ArticleForCategory from '../pages/public/ArticleForCategory/ArticleForCategory.page';
 import { ProtectedRoute } from '../components/ProtectedRouter/ProtectedRoute';
 import EditProfilePage from '../pages/Private/EditProfile/EditProfile';
 import NotFoundPage from '../pages/public/NotFoundPage/NotFoundPage';
@@ -18,6 +17,7 @@ import EditMyArticles from '../pages/Private/EditMyArticles/EditMyArticles';
 import CreateArticlePage from '../pages/Private/CreateArticlePage/CreateArticlePage';
 import PostPage from '../pages/public/Post/PostPage';
 import PostDetailPage from '../pages/public/PostDetailPage/PostDetailPage';
+import PostPorCategory from '../pages/public/PostPorCategory/PostPorCategory';
 
 export const router = createBrowserRouter([
     {
@@ -28,8 +28,8 @@ export const router = createBrowserRouter([
             { path: 'postagens', element: <PostPage /> },
             { path: 'postagens/:id', element: <PostDetailPage /> },
             { path: 'categorias', element: <CategoryPage /> },
+            { path: 'categorias/:slug', element: <PostPorCategory /> },
             { path: 'servicos', element: <ServicesPage /> },
-            { path: 'categorias/:slug', element: <ArticleForCategory /> },
             { path: 'sobre', element: <AboutPage /> },
             { path: 'contato', element: <ContactPage /> },
             { path: 'login', element: <SigninPage /> },
