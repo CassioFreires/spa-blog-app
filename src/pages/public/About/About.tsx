@@ -4,46 +4,56 @@ import './About.css'
 function AboutPage() {
   return (
     <Container>
-      <section className="sobre-page py-5">
-        <header className="text-center mb-5 fade-in">
-          <h1 className="display-5 fw-bold">Sobre o Blog</h1>
-          <p className="lead text-secondary">
+      <section className="about-page">
+        <header className="page-header">
+          <h1 className="title">Sobre o Blog</h1>
+          <p className="subtitle">
             Um espaço para aprender, evoluir e se conectar com o universo da tecnologia.
           </p>
         </header>
 
-        <div className="row g-5 align-items-center">
-          <div className="col-md-6 fade-in">
+        <div className="content-section">
+          <div className="image-container">
             <img
-              src="https://source.unsplash.com/random/700x500?technology,code"
-              alt="Imagem ilustrativa do blog"
-              className="img-fluid rounded shadow"
+              src="/assets/images/img-sobre.jpg"
+              alt="Imagem ilustrativa de uma pessoa codificando em um notebook, simbolizando a criação do blog."
+              className="about-image"
             />
           </div>
 
-          <div className="col-md-6 fade-in">
-            <h2 className="fw-bold mb-3">O que é este blog?</h2>
-            <p className="fs-5 text-secondary">
-              Este blog é um projeto criado para compartilhar conteúdos relevantes, práticos e atualizados sobre o mundo da tecnologia.
-              Aqui você encontrará postagens sobre desenvolvimento de software, frameworks modernos, boas práticas, tendências de mercado,
-              inteligência artificial, mobile, ferramentas úteis e muito mais.
-            </p>
+          <div className="text-container">
+            <article className="article-block fade-in-up">
+              <h2 className="block-title">O que é este blog?</h2>
+              <p className="block-text">
+                Este blog é um projeto criado para compartilhar conteúdos relevantes, práticos e atualizados sobre o mundo da tecnologia. Aqui você encontrará postagens sobre desenvolvimento de software, frameworks modernos, boas práticas, tendências de mercado, inteligência artificial, mobile, ferramentas úteis e muito mais.
+              </p>
+            </article>
 
-            <h3 className="mt-4 fw-semibold">Por que acompanhar?</h3>
-            <ul className="list-unstyled fs-5 text-secondary mt-3">
-              <li><i className="bi bi-check-circle-fill text-primary me-2"></i> Conteúdo técnico e acessível</li>
-              <li><i className="bi bi-check-circle-fill text-primary me-2"></i> Foco em desenvolvimento e inovação</li>
-              <li><i className="bi bi-check-circle-fill text-primary me-2"></i> Atualizações frequentes e práticas</li>
-              <li><i className="bi bi-check-circle-fill text-primary me-2"></i> Ideal para iniciantes e profissionais</li>
-            </ul>
-
-            <a href="/postagens" className="btn btn-primary mt-4">
-              <i className="bi bi-journal-text me-1"></i> Ver postagens
-            </a>
+            <article className="article-block fade-in-up" style={{ animationDelay: '0.2s' }}>
+              <h3 className="block-subtitle">Por que acompanhar?</h3>
+              <ul className="info-list">
+                <li><i className="bi bi-check-circle-fill text-primary me-2"></i> Conteúdo técnico e acessível</li>
+                <li><i className="bi bi-check-circle-fill text-primary me-2"></i> Foco em desenvolvimento e inovação</li>
+                <li><i className="bi bi-check-circle-fill text-primary me-2"></i> Atualizações frequentes e práticas</li>
+                <li><i className="bi bi-check-circle-fill text-primary me-2"></i> Ideal para iniciantes e profissionais</li>
+              </ul>
+            </article>
           </div>
         </div>
 
-        <footer className="text-center mt-5 small text-muted fade-in">
+        <section className="mission-section fade-in-up" style={{ animationDelay: '0.4s' }}>
+          <div className="mission-content">
+            <h2 className="block-title">Nossa Missão</h2>
+            <p className="block-text">
+              Acreditamos que o conhecimento é a chave para a evolução. Nossa missão é desmistificar a tecnologia, tornando-a acessível a todos, independentemente do nível de experiência. Queremos inspirar a comunidade, incentivando a curiosidade e o aprendizado contínuo para construir um futuro mais conectado.
+            </p>
+            <a href="/postagens" className="btn-cta">
+              <i className="bi bi-journal-text me-1"></i> Ver postagens
+            </a>
+          </div>
+        </section>
+
+        <footer className="page-footer fade-in-up" style={{ animationDelay: '0.6s' }}>
           <i className="bi bi-code-slash me-1"></i>
           Blog de Tecnologia — Compartilhando conhecimento desde {new Date().getFullYear()}
         </footer>

@@ -1,5 +1,6 @@
 import { servicos } from "../../../data/servicos.mocks";
 import Container from "../../../components/Container/Container.components";
+import { Link } from "react-router-dom";
 
 function ServicesPage() {
     return (
@@ -22,12 +23,12 @@ function ServicesPage() {
                     ))}
                 </div>
 
-                <div className="text-center mt-5 fade-in mb-5">
-                    <a href="/contato" className="btn btn-primary btn-lg">
-                        <i className="bi bi-chat-dots me-2"></i>
-                        Solicite um orçamento
-                    </a>
-                </div>
+                <section className="text-center py-5 d-flex flex-column align-items-center">
+                    <h3 className="mb-3">Tem um projeto em mente?</h3>
+                    <Link to="/contato" className="btn btn-primary btn-lg w-25 justify-content-center">
+                        Solicite um Orçamento
+                    </Link>
+                </section>
             </section>
         </Container>
     );
