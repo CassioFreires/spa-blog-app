@@ -1,33 +1,69 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Container from '../../../components/Container/Container.components';
-import './Signup.css'
+// src/pages/Signup/SignupPage.tsx
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
-function SignupPage() {
-  const navigate = useNavigate();
-  const [form, setForm] = useState({
-    nome: '',
-    email: '',
-    senha: '',
-    confirmarSenha: '',
+import Container from "../../../components/Container/Container.components";
+import AuthService from "../../../services/auth-service";
+import AlertMessage from "../../../components/AlertMessage/AlertMessage";
+import Loader from "../../../components/Loader/Loader";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./Signup.css";
+
+// 1️⃣ Esquema de validação com Zod
+const signupSchema = z
+  .object({
+    nome: z.string().min(2, "O nome precisa ter no mínimo 2 caracteres"),
+    sobrenome: z.string().min(2, "O sobrenome precisa ter no mínimo 2 caracteres"),
+    email: z.string().email("Email inválido"),
+    senha: z.string().min(6, "A senha precisa ter no mínimo 6 caracteres"),
+    confirmPassword: z.string().min(6, "A senha precisa ter no mínimo 6 caracteres"),
+  })
+  .refine((data) => data.senha === data.confirmPassword, {
+    message: "As senhas não coincidem",
+    path: ["confirmPassword"],
   });
-  const [erro, setErro] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+// 2️⃣ Tipagem do formulário
+type SignupFormData = z.infer<typeof signupSchema>;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+export default function SignupPage() {
+  const navigate = useNavigate();
+  const [serverError, setServerError] = useState("");
 
-    if (form.senha !== form.confirmarSenha) {
-      setErro('As senhas não coincidem.');
-      return;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
+  });
+
+  // 3️⃣ Função de envio
+  const onSubmit = async (data: SignupFormData) => {
+    setServerError("");
+    try {
+      const authService = new AuthService();
+      await authService.signup({
+        name: data.nome,
+        lastName: data.sobrenome,
+        email: data.email,
+        password_hash: data.senha,
+        confirmPassword: data.confirmPassword,
+        role_id: 4, // Usuário padrão
+      });
+
+      toast.success("Conta criada com sucesso! Redirecionando...");
+      setTimeout(() => navigate("/login"), 2000);
+    } catch (error: any) {
+      console.error(error);
+      const message = error?.response?.data?.message || error?.message || "Erro ao registrar usuário";
+      setServerError(message);
+      toast.error(message);
     }
-
-    // Simulação de cadastro
-    console.log('Usuário cadastrado:', form);
-    navigate('/login');
   };
 
   return (
@@ -35,73 +71,109 @@ function SignupPage() {
       <section className="cadastro-page py-5">
         <header className="text-center mb-4 fade-in">
           <h1 className="fw-bold display-6">Criar Conta</h1>
-          <p className="text-secondary">Cadastre-se para aproveitar todos os recursos do blog.</p>
+          <p className="text-secondary">
+            Cadastre-se para aproveitar todos os recursos do blog.
+          </p>
         </header>
 
         <div className="row justify-content-center fade-in">
           <div className="col-md-6 col-lg-4">
-            <form onSubmit={handleSubmit} className="border rounded p-4 shadow-sm bg-white">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="border rounded p-4 shadow-sm bg-white"
+            >
+              {serverError && <AlertMessage message={serverError} />}
+
+              {/* Nome */}
               <div className="mb-3">
-                <label htmlFor="nome" className="form-label fw-semibold">Nome</label>
+                <label htmlFor="nome" className="form-label fw-semibold">
+                  Nome
+                </label>
                 <input
                   type="text"
                   className="form-control"
                   id="nome"
-                  name="nome"
-                  placeholder="Seu nome completo"
-                  value={form.nome}
-                  onChange={handleChange}
-                  required
+                  {...register("nome")}
+                  placeholder="Seu nome"
+                  disabled={isSubmitting}
                 />
+                {errors.nome && <p className="text-danger">{errors.nome.message}</p>}
               </div>
 
+              {/* Sobrenome */}
               <div className="mb-3">
-                <label htmlFor="email" className="form-label fw-semibold">E-mail</label>
+                <label htmlFor="sobrenome" className="form-label fw-semibold">
+                  Sobrenome
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="sobrenome"
+                  {...register("sobrenome")}
+                  placeholder="Seu sobrenome"
+                  disabled={isSubmitting}
+                />
+                {errors.sobrenome && <p className="text-danger">{errors.sobrenome.message}</p>}
+              </div>
+
+              {/* Email */}
+              <div className="mb-3">
+                <label htmlFor="email" className="form-label fw-semibold">
+                  E-mail
+                </label>
                 <input
                   type="email"
                   className="form-control"
                   id="email"
-                  name="email"
+                  {...register("email")}
                   placeholder="seu@email.com"
-                  value={form.email}
-                  onChange={handleChange}
-                  required
+                  disabled={isSubmitting}
                 />
+                {errors.email && <p className="text-danger">{errors.email.message}</p>}
               </div>
 
+              {/* Senha */}
               <div className="mb-3">
-                <label htmlFor="senha" className="form-label fw-semibold">Senha</label>
+                <label htmlFor="senha" className="form-label fw-semibold">
+                  Senha
+                </label>
                 <input
                   type="password"
                   className="form-control"
                   id="senha"
-                  name="senha"
+                  {...register("senha")}
                   placeholder="Crie uma senha"
-                  value={form.senha}
-                  onChange={handleChange}
-                  required
+                  disabled={isSubmitting}
                 />
+                {errors.senha && <p className="text-danger">{errors.senha.message}</p>}
               </div>
 
+              {/* Confirmar senha */}
               <div className="mb-3">
-                <label htmlFor="confirmarSenha" className="form-label fw-semibold">Confirmar Senha</label>
+                <label htmlFor="confirmPassword" className="form-label fw-semibold">
+                  Confirmar Senha
+                </label>
                 <input
                   type="password"
                   className="form-control"
-                  id="confirmarSenha"
-                  name="confirmarSenha"
+                  id="confirmPassword"
+                  {...register("confirmPassword")}
                   placeholder="Repita a senha"
-                  value={form.confirmarSenha}
-                  onChange={handleChange}
-                  required
+                  disabled={isSubmitting}
                 />
+                {errors.confirmPassword && (
+                  <p className="text-danger">{errors.confirmPassword.message}</p>
+                )}
               </div>
 
-              {erro && <div className="alert alert-danger">{erro}</div>}
-
-              <button type="submit" className="btn btn-success w-100 mt-2">
-                <i className="bi bi-person-plus me-1"></i> Criar conta
-              </button>
+              {/* Loader ou botão */}
+              {isSubmitting ? (
+                <Loader size="sm" message="Criando conta..." />
+              ) : (
+                <button type="submit" className="btn btn-success w-100 mt-2">
+                  Criar conta
+                </button>
+              )}
 
               <div className="text-center mt-3">
                 <small className="text-secondary">
@@ -115,5 +187,3 @@ function SignupPage() {
     </Container>
   );
 }
-
-export default SignupPage;

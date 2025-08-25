@@ -1,3 +1,4 @@
+// HomePage.jsx
 import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Container from '../../../components/Container/Container.components';
@@ -11,8 +12,6 @@ import Card from '../../../components/Card/Card';
 import type { Post } from '../../../interfaces/post-interface';
 
 import './Home.css';
-
-
 
 function HomePage() {
     const [posts, setPosts] = useState<Post[]>([]);
@@ -35,6 +34,7 @@ function HomePage() {
 
                 const result = await postService.getTop();
                 if (!active) return;
+                // CORREÇÃO: Acessa a propriedade `data` diretamente na resposta
                 setPosts(result.posts.data || []);
             } catch {
                 if (!active) return;

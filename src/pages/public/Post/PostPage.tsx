@@ -1,3 +1,4 @@
+// PostPage.jsx
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Container from "../../../components/Container/Container.components";
@@ -28,12 +29,15 @@ export default function PostPage() {
     async (page: number) => {
       setIsLoading(true);
       try {
+        // CORREÇÃO: Acessando 'data' e 'pagination' aninhados na resposta
         const result = await postService.getAll(page);
-        setPosts(result.posts.data || []);
-        setCurrentPage(result.posts.pagination.currentPage || 1);
-        setTotalPages(result.posts.pagination.totalPages || 1);
+        setPosts(result.data || []);
+        setCurrentPage(result.pagination.currentPage || 1);
+        setTotalPages(result.pagination.totalPages || 1);
       } catch (error) {
         console.error("Erro ao buscar posts:", error);
+        // Opcional: Lidar com o erro de forma mais visível para o usuário
+        setMessage("Não foi possível carregar as postagens.");
       } finally {
         setIsLoading(false);
       }
