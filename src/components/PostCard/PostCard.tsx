@@ -32,8 +32,8 @@ export default function PostCard({ post, onReadMore }: PostCardProps) {
           alt={post.title}
           loading="lazy"
         />
+        
         <div className="card-body d-flex flex-column">
-          <span className="badge bg-primary mb-2">{post.category_name}</span>
           <h5 className="card-title">{post.title}</h5>
           <p className="text-muted small mb-2">
             Por {post.user_name || post.author || 'Autor desconhecido'} •{' '}
