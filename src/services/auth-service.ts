@@ -1,4 +1,5 @@
 import axios from 'axios';
+import type { SignupPayload } from '../interfaces/signup';
 
 
 type UserSignup = {
@@ -12,13 +13,15 @@ export default class AuthService {
 
     private url = 'http://localhost:3000';
 
-    async signup(data: UserSignup) {
+    async signup(data: SignupPayload) {
         try {
-            const user = await axios.post(`${this.url}/api/auth/signup`, {data});
-            return user;
-        } catch (error) {
-            console.log(error);
-            throw error;
+            const response = await axios.post(`${this.url}/api/auth/signup`, {
+                data, // ⚠️ seu backend espera o body dentro de `data`
+            });
+            return response.data;
+        } catch (error: any) {
+            console.error(error);
+            throw error?.response?.data || { message: "Erro ao criar usuário" };
         }
     }
 
@@ -28,11 +31,8 @@ export default class AuthService {
                 email: email,
                 password_hash: password
             });
-
-            console.log(response)
             return response.data; // aqui sim você retorna o resultado da API
         } catch (error: any) {
-            console.log(error);
             throw error?.response?.data || { message: "Erro desconhecido" };
         }
     }

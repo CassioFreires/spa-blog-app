@@ -1,3 +1,4 @@
+// PostCard.jsx
 import Card from '../Card/Card';
 import Button from '../Button/Button';
 import type { Post } from '../../interfaces/post-interface';

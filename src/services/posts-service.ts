@@ -22,6 +22,7 @@ export default class PostService {
       const response = await axios.get(`${this.url}/api/posts`, {
         params: { page, limit }
       });
+      // CORREÇÃO: Retornando a resposta completa para que o componente lide com a estrutura de paginação
       return response.data;
     } catch (error) {
       console.error(error);
@@ -132,7 +133,7 @@ export default class PostService {
     }
   }
 
-    async createPostByUser(token: string, post: Partial<IPost>) {
+  async createPostByUser(token: string, post: Partial<IPost>) {
     try {
       const response = await axios.post(`${this.url}/api/posts/createpostbyuser`, post,{
         headers: {

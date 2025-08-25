@@ -12,8 +12,7 @@ function ContactPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Aqui você pode enviar para uma API, Zapier, Formspree, etc
-    console.log('Dados enviados:', form);
+
 
     setEnviado(true);
     setForm({ nome: '', email: '', mensagem: '' });

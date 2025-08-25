@@ -1,23 +1,25 @@
-import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useMemo, useState } from "react";
-import Container from "../../../components/Container/Container.components";
-import PostService from "../../../services/posts-service";
-import CategoriesService from "../../../services/categories-service";
-import type { ICategory } from "../../../interfaces/category"; // ajuste o path se necessário
-import { useAuth } from "../../../context/AuthContext";
-import { toast } from "react-toastify";
-import { FaPaperPlane, FaTimes } from "react-icons/fa";
-import "./CreateMyPost.css";
+import { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMemo } from 'react';
+
+import Container from '../../../components/Container/Container.components';
+import PostService from '../../../services/posts-service';
+import CategoriesService from '../../../services/categories-service';
+import type { ICategory } from '../../../interfaces/category';
+import { useAuth } from '../../../context/AuthContext';
+import { toast } from 'react-toastify';
+import { FaPaperPlane, FaTimes } from 'react-icons/fa';
+import './CreateMyPost.css';
 
 // --- Schema de validação com Zod ---
 const createPostSchema = z.object({
-  title: z.string().min(3, "O título deve ter pelo menos 3 caracteres."),
-  subtitle: z.string().min(5, "O subtítulo deve ter pelo menos 5 caracteres."),
-  category_id: z.string().nonempty("Selecione uma categoria."),
-  content: z.string().min(20, "O conteúdo deve ter pelo menos 20 caracteres."),
+  title: z.string().min(3, 'O título deve ter pelo menos 3 caracteres.'),
+  subtitle: z.string().min(5, 'O subtítulo deve ter pelo menos 5 caracteres.'),
+  category_id: z.string().nonempty('Selecione uma categoria.'),
+  content: z.string().min(20, 'O conteúdo deve ter pelo menos 20 caracteres.'),
 });
 
 type CreatePostFormData = z.infer<typeof createPostSchema>;
@@ -37,13 +39,14 @@ export default function CreateMyPostPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    setError, // <--- Adicionado para tratar erros do backend
   } = useForm<CreatePostFormData>({
     resolver: zodResolver(createPostSchema),
     defaultValues: {
-      title: "",
-      subtitle: "",
-      category_id: "",
-      content: "",
+      title: '',
+      subtitle: '',
+      category_id: '',
+      content: '',
     },
   });
 
@@ -58,12 +61,12 @@ export default function CreateMyPostPage() {
         const res = await categoriesService.getAll(1, 100);
 
         // casos comuns de resposta:
-        // 1) { data: ICategory[] }    -> use res.data
-        // 2) ICategory[] diretamente  -> use res
+        // 1) { data: ICategory[] }    -> use res.data
+        // 2) ICategory[] diretamente  -> use res
         const list: ICategory[] = Array.isArray(res) ? res : (res?.data ?? []);
         setCategories(list);
       } catch (err: any) {
-        const message = err?.message || "Erro ao carregar categorias.";
+        const message = err?.message || 'Erro ao carregar categorias.';
         setCategoriesError(message);
         toast.error(message);
       } finally {
@@ -76,22 +79,36 @@ export default function CreateMyPostPage() {
 
   const onSubmit = async (data: CreatePostFormData) => {
     if (!user || !token) {
-      toast.error("Você precisa estar logado para criar um artigo.");
+      toast.error('Você precisa estar logado para criar um artigo.');
       return;
     }
 
     try {
       await postService.createPostByUser(String(token), {
         ...data,
-        id: user.id,
+        // CORREÇÃO: O backend não precisa do `id` do usuário no payload, apenas do `category_id`
+        // O `user_id` é injetado pelo backend através do token.
         category_id: Number(data.category_id), // garante número
       });
 
-      toast.success("Artigo criado com sucesso!");
-      navigate("/painel/perfil/minhas-postagens");
+      toast.success('Artigo criado com sucesso!');
+      navigate('/painel/perfil/minhas-postagens');
     } catch (err: any) {
-      console.error("Erro ao criar artigo:", err);
-      toast.error(err?.message || "Erro ao criar o artigo. Tente novamente.");
+      console.error('Erro ao criar artigo:', err);
+      // CORREÇÃO: Tratar erros do backend e re-habilitar o botão
+      if (err.errors) {
+        // Se a resposta de erro do backend for um array de erros,
+        // mapeamos e usamos setError do react-hook-form
+        Object.entries(err.errors).forEach(([field, messages]) => {
+            if (Array.isArray(messages)) {
+              setError(field as keyof CreatePostFormData, {
+                type: 'server',
+                message: messages.join(', '),
+              });
+            }
+        });
+      }
+      toast.error(err?.message || 'Erro ao criar o artigo. Tente novamente.');
     }
   };
 
@@ -117,7 +134,7 @@ export default function CreateMyPostPage() {
               id="title"
               className="form-control"
               placeholder="Digite um título claro e impactante"
-              {...register("title")}
+              {...register('title')}
             />
             {errors.title && (
               <small className="text-danger">{errors.title.message}</small>
@@ -131,7 +148,7 @@ export default function CreateMyPostPage() {
               id="subtitle"
               className="form-control"
               placeholder="Adicione um subtítulo que complemente a ideia principal"
-              {...register("subtitle")}
+              {...register('subtitle')}
             />
             {errors.subtitle && (
               <small className="text-danger">{errors.subtitle.message}</small>
@@ -145,14 +162,14 @@ export default function CreateMyPostPage() {
               id="category"
               className="form-control"
               disabled={isLoadingCategories || !!categoriesError}
-              {...register("category_id")}
+              {...register('category_id')}
             >
               <option value="">
                 {isLoadingCategories
-                  ? "Carregando categorias..."
+                  ? 'Carregando categorias...'
                   : categoriesError
-                  ? "Erro ao carregar categorias"
-                  : "Selecione uma categoria"}
+                  ? 'Erro ao carregar categorias'
+                  : 'Selecione uma categoria'}
               </option>
 
               {categories?.map((cat) => (
@@ -187,7 +204,7 @@ export default function CreateMyPostPage() {
               className="form-control"
               rows={8}
               placeholder="Escreva aqui o conteúdo do artigo..."
-              {...register("content")}
+              {...register('content')}
             ></textarea>
             {errors.content && (
               <small className="text-danger">{errors.content.message}</small>
@@ -221,4 +238,3 @@ export default function CreateMyPostPage() {
     </Container>
   );
 }
-
