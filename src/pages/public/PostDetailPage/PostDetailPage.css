@@ -155,3 +155,51 @@
     font-size: 2rem;
   }
 }
+
+
+/* PostDetailPage.css */
+
+.comments-section {
+    padding: 2rem 0;
+}
+
+.comments-list {
+    border-top: 1px solid #e9ecef;
+    padding-top: 2rem;
+}
+
+.comment-item {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.comment-meta strong {
+    font-size: 1rem;
+}
+
+.comment-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
+.view-comments-toggle {
+  background: none;
+  border: none;
+  color: #1877f2; /* azul estilo Facebook */
+  padding: 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s;
+}
+
+.view-comments-toggle:hover {
+  color: #165ec9;
+  text-decoration: underline;
+}

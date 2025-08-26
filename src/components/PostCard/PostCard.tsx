@@ -2,11 +2,13 @@
 import Card from '../Card/Card';
 import Button from '../Button/Button';
 import type { Post } from '../../interfaces/post-interface';
-import './PostCard.css'
+import './PostCard.css';
+import PostCommented from '../PostCommented/PostCommented';
 
 type PostCardProps = {
   post: Post;
   onReadMore: (id: number) => void;
+  onCommentAccess: (id: number) => void; // Adiciona a nova prop
 };
 
 function truncate(text: string | undefined, max: number) {
@@ -18,13 +20,13 @@ function formatDateBR(dateISO: string | Date) {
   return new Date(dateISO).toLocaleDateString('pt-BR');
 }
 
-export default function PostCard({ post, onReadMore }: PostCardProps) {
+export default function PostCard({ post, onReadMore, onCommentAccess }: PostCardProps) {
   const fallbackImg = `https://source.unsplash.com/400x200/?${encodeURIComponent(
     post.category_name || 'technology'
   )}`;
 
   return (
-    <article className="col-md-6 col-lg-4">
+    <article className="col-md-6 col-lg-4 teste">
       <Card>
         <img
           src={post.imageUrl || fallbackImg}
@@ -32,7 +34,6 @@ export default function PostCard({ post, onReadMore }: PostCardProps) {
           alt={post.title}
           loading="lazy"
         />
-        
         <div className="card-body d-flex flex-column">
           <h5 className="card-title">{post.title}</h5>
           <p className="text-muted small mb-2">
@@ -54,6 +55,11 @@ export default function PostCard({ post, onReadMore }: PostCardProps) {
           >
             Ler mais
           </Button>
+          
+          <PostCommented 
+            postId={post.id}
+            onCommentAccess={onCommentAccess}
+          />
         </div>
       </Card>
     </article>
