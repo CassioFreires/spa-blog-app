@@ -1,4 +1,3 @@
-// PostPage.jsx
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Container from "../../../components/Container/Container.components";
@@ -13,6 +12,7 @@ import AuthRedirectMessage from "../../../components/AuthRedirect/AuthRedirect";
 import Section from "../../../components/Section/Section";
 
 import type { Post } from "../../../interfaces/post-interface";
+import PostCommented from "../../../components/PostCommented/PostCommented";
 
 export default function PostPage() {
   const navigate = useNavigate();
@@ -29,14 +29,12 @@ export default function PostPage() {
     async (page: number) => {
       setIsLoading(true);
       try {
-        // CORREÇÃO: Acessando 'data' e 'pagination' aninhados na resposta
         const result = await postService.getAll(page);
         setPosts(result.data || []);
         setCurrentPage(result.pagination.currentPage || 1);
         setTotalPages(result.pagination.totalPages || 1);
       } catch (error) {
         console.error("Erro ao buscar posts:", error);
-        // Opcional: Lidar com o erro de forma mais visível para o usuário
         setMessage("Não foi possível carregar as postagens.");
       } finally {
         setIsLoading(false);
@@ -61,6 +59,20 @@ export default function PostPage() {
     },
     [isAuthenticated, navigate]
   );
+  
+  // Nova função para lidar com o acesso a comentários
+  const handleCommentAccess = useCallback((postId: number) => {
+    if (isAuthenticated) {
+      // Se autenticado, navega para a página de comentários
+      navigate(`/postagens/${postId}`);
+    } else {
+      // Se não autenticado, mostra a mensagem e redireciona
+      setMessage("Você precisa estar autenticado para comentar. Redirecionando para a página de login...");
+      setTimeout(() => {
+        navigate('/login');
+      }, 3000); // Redireciona após 3 segundos
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <Container>
@@ -82,11 +94,14 @@ export default function PostPage() {
         ) : posts.length > 0 ? (
           <div className="row g-4">
             {posts.map((post) => (
-              <PostCard
-                key={post.id}
-                post={post}
-                onReadMore={handleReadMore}
-              />
+              <div key={post.id} className="col-md-6 col-lg-4">
+                <PostCard
+                  post={post}
+                  onReadMore={handleReadMore}
+                  // Passa a função de acesso a comentários para o PostCard
+                  onCommentAccess={handleCommentAccess}
+                />
+              </div>
             ))}
           </div>
         ) : (
