@@ -12,7 +12,6 @@ import AuthRedirectMessage from "../../../components/AuthRedirect/AuthRedirect";
 import Section from "../../../components/Section/Section";
 
 import type { Post } from "../../../interfaces/post-interface";
-import PostCommented from "../../../components/PostCommented/PostCommented";
 
 export default function PostPage() {
   const navigate = useNavigate();

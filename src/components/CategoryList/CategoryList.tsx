@@ -13,8 +13,8 @@ export default function CategoryList({ categories, iconsMap = {} }: CategoryList
     return (
         <div className="row g-4">
             {categories.map((category) => (
-                <div key={category.id} className="col-md-4 col-lg-3">
-                    <CategoryCard
+                <div key={category.id} className="col-md-4 col-lg-4">
+                     <CategoryCard
                         title={category.name}
                         description={category.description}
                         icon={iconsMap[category.slug?.toLowerCase()] || "bi-folder"}

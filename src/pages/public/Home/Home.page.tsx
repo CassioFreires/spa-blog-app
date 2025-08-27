@@ -1,16 +1,14 @@
-// HomePage.jsx
+// HomePage.tsx
 import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Container from '../../../components/Container/Container.components';
 import PostService from '../../../services/posts-service';
 import { useAuth } from '../../../context/AuthContext';
-
 import Alert from '../../../components/Alert/Alert';
 import Loader from '../../../components/Loader/Loader';
 import PostCard from '../../../components/PostCard/PostCard';
-import Card from '../../../components/Card/Card';
 import type { Post } from '../../../interfaces/post-interface';
-
+import Card from '../../../components/Card/Card';
 import './Home.css';
 
 function HomePage() {
@@ -24,6 +22,7 @@ function HomePage() {
     const navigate = useNavigate();
     const redirectTimeoutRef = useRef<number | null>(null);
 
+    // Carregar posts
     useEffect(() => {
         let active = true;
 
@@ -34,7 +33,7 @@ function HomePage() {
 
                 const result = await postService.getTop();
                 if (!active) return;
-                // CORREÇÃO: Acessa a propriedade `data` diretamente na resposta
+
                 setPosts(result.posts.data || []);
             } catch {
                 if (!active) return;
@@ -52,16 +51,14 @@ function HomePage() {
         };
     }, [postService]);
 
+    // Redirecionamento ao ler mais
     const handleReadMore = useCallback(
         (id: number) => {
             if (!isAuthenticated) {
                 setMessage(
                     'Você precisa estar autenticado para acessar este conteúdo. Redirecionando para login...'
                 );
-                redirectTimeoutRef.current = window.setTimeout(
-                    () => navigate('/login'),
-                    4000
-                );
+                redirectTimeoutRef.current = window.setTimeout(() => navigate('/login'), 4000);
                 return;
             }
             navigate(`/postagens/${id}`);
@@ -69,10 +66,23 @@ function HomePage() {
         [isAuthenticated, navigate]
     );
 
+    // Exemplo de acesso aos comentários
+    const handleCommentAccess = useCallback(
+        (postId: number) => {
+            if (!isAuthenticated) {
+                setMessage('Você precisa estar logado para comentar.');
+                redirectTimeoutRef.current = window.setTimeout(() => navigate('/login'), 3000);
+                return;
+            }
+            navigate(`/postagens/${postId}#comments`);
+        },
+        [isAuthenticated, navigate]
+    );
+
     return (
         <Container>
-            {/* Header principal */}
             <section className="home-page">
+                {/* Header */}
                 <header className="text-center mb-5">
                     <h1 className="display-4 fw-bold">Bem-vindo ao Meu Blog</h1>
                     <p className="lead text-secondary">
@@ -83,7 +93,9 @@ function HomePage() {
                 {/* Hero */}
                 <section className="hero-section text-center text-light mb-5">
                     <div className="overlay d-flex flex-column justify-content-center align-items-center">
-                        <h1 className="display-3 fw-bold mb-3 animate-title">Soluções em Tecnologia</h1>
+                        <h1 className="display-3 fw-bold mb-3 animate-title">
+                            Soluções em Tecnologia
+                        </h1>
                         <p className="lead mb-4">Desenvolvimento moderno, rápido e personalizado.</p>
                         <Link to="/servicos" className="btn btn-outline-light btn-lg">
                             Conheça os serviços
@@ -91,10 +103,10 @@ function HomePage() {
                     </div>
                 </section>
 
-                {/* Mensagem de autenticação */}
+                {/* Mensagem */}
                 {message && <Alert type="warning">{message}</Alert>}
 
-                {/* Estados de carregamento / erro / vazio */}
+                {/* Loader / Erro / Vazio */}
                 {loading && <Loader />}
                 {!loading && error && <Alert type="danger">{error}</Alert>}
                 {!loading && !error && posts.length === 0 && (
@@ -107,12 +119,18 @@ function HomePage() {
                 {!loading && !error && posts.length > 0 && (
                     <div className="row g-4">
                         {posts.map((post) => (
-                            <PostCard key={post.id} post={post} onReadMore={handleReadMore} />
+                            <div key={post.id} className='col-md-6 col-lg-4'>
+                                <PostCard
+                                    key={post.id}
+                                    post={post}
+                                    onReadMore={handleReadMore}
+                                    onCommentAccess={handleCommentAccess}
+                                />
+                            </div>
                         ))}
                     </div>
                 )}
             </section>
-
             {/* Seção de serviços */}
             <section className="mt-5 mb-5">
                 <h2 className="text-center mb-4">Serviços de Desenvolvimento</h2>
@@ -140,7 +158,6 @@ function HomePage() {
                     </div>
                 </div>
             </section>
-
             {/* Call to action */}
             <section className="text-center py-5 d-flex flex-column align-items-center">
                 <h3 className="mb-3">Tem um projeto em mente?</h3>
