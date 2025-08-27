@@ -39,12 +39,30 @@ export default class LikeService {
   }
 
   // Quantidade de likes em um post
-  async countByPost(post_id: number): Promise<IReturnResponse<number>> {
+  async countByPost(post_id: number, token: string): Promise<IReturnResponse<number>> {
     try {
-      const response = await axios.get(`${this.baseUrl}/count/${post_id}`);
+      const response = await axios.get(`${this.baseUrl}/count/${post_id}`, {
+        headers: {
+          Authorization: `Berear ${token}`
+        }
+      });
       return response.data;
     } catch (error: any) {
       console.error("[LikeService][countByPost]", error);
+      throw error.response?.data || error;
+    }
+  }
+
+  async countByMultiplePosts(postIds: number[], token: string): Promise<IReturnResponse<Record<number, number>>> {
+    try {
+      const response = await axios.post(`${this.baseUrl}/count-multiple`, { postIds }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error("[LikeService][countByMultiplePosts]", error);
       throw error.response?.data || error;
     }
   }

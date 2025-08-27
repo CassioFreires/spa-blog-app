@@ -1,53 +1,55 @@
-// PostCard.jsx
 import Card from '../Card/Card';
 import Button from '../Button/Button';
-import type { Post } from '../../interfaces/post-interface';
-import './PostCard.css';
 import PostCommented from '../PostCommented/PostCommented';
+import type { Post } from '../../interfaces/post-interface';
+import { truncate } from '../../utils/text';
+import { formatDateBR } from '../../utils/date';
+import './PostCard.css';
 
 type PostCardProps = {
   post: Post;
   onReadMore: (id: number) => void;
-  onCommentAccess: (id: number) => void; // Adiciona a nova prop
+  onCommentAccess: (id: number) => void;
+  initialLikes?: number; // Quantidade inicial de likes
 };
 
-function truncate(text: string | undefined, max: number) {
-  if (!text) return '';
-  return text.length > max ? text.slice(0, max).trimEnd() + '…' : text;
-}
+export default function PostCard({
+  post,
+  onReadMore,
+  onCommentAccess,
+  initialLikes = 0
+}: PostCardProps) {
 
-function formatDateBR(dateISO: string | Date) {
-  return new Date(dateISO).toLocaleDateString('pt-BR');
-}
-
-export default function PostCard({ post, onReadMore, onCommentAccess }: PostCardProps) {
-  const fallbackImg = `https://source.unsplash.com/400x200/?${encodeURIComponent(
-    post.category_name || 'technology'
-  )}`;
+  // Variáveis auxiliares para deixar JSX mais limpo
+  const author = post.user_name || post.author || 'Autor desconhecido';
+  const categoryDesc = post.category_description ? truncate(post.category_description, 60) : '';
+  const imageSrc = post.imageUrl || `https://source.unsplash.com/400x200/?${encodeURIComponent(post.category_name || 'technology')}`;
+  const likes = initialLikes;
+  const userLiked = post.userLiked || false;
 
   return (
     <article>
       <Card>
         <img
-          src={post.imageUrl || fallbackImg}
+          src={imageSrc}
           className="card-img-top"
           alt={post.title}
           loading="lazy"
         />
+
         <div className="card-body d-flex flex-column">
           <h5 className="card-title">{post.title}</h5>
+
           <p className="text-muted small mb-2">
-            Por {post.user_name || post.author || 'Autor desconhecido'} •{' '}
-            {formatDateBR(post.createdAt)}
+            Por {author} • {formatDateBR(post.createdAt)}
           </p>
-          <p className="card-text flex-grow-1">
-            {truncate(post.content, 100)}
-          </p>
-          {post.category_description && (
-            <p className="text-secondary small fst-italic mb-3">
-              {truncate(post.category_description, 60)}
-            </p>
+
+          <p className="card-text flex-grow-1">{truncate(post.content, 100)}</p>
+
+          {categoryDesc && (
+            <p className="text-secondary small fst-italic mb-3">{categoryDesc}</p>
           )}
+
           <Button
             variant="gradient"
             className="mt-auto"
@@ -55,10 +57,12 @@ export default function PostCard({ post, onReadMore, onCommentAccess }: PostCard
           >
             Ler mais
           </Button>
-          
-          <PostCommented 
+
+          <PostCommented
             postId={post.id}
             onCommentAccess={onCommentAccess}
+            initialLikes={likes}
+            initialUserLiked={userLiked}
           />
         </div>
       </Card>

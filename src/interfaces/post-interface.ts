@@ -1,4 +1,5 @@
 export interface Post {
+  userLiked: boolean;
   id: number;
   title: string;
   subtitle?: string;
