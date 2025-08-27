@@ -26,7 +26,7 @@ export default function PostCard({ post, onReadMore, onCommentAccess }: PostCard
   )}`;
 
   return (
-    <article className="col-md-6 col-lg-4 teste">
+    <article>
       <Card>
         <img
           src={post.imageUrl || fallbackImg}

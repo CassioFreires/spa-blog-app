@@ -40,6 +40,19 @@ export default function PostPorCategory() {
     fetchPosts();
   }, [fetchPosts]);
 
+   const handleCommentAccess = useCallback((postId: number) => {
+    if (isAuthenticated) {
+      // Se autenticado, navega para a página de comentários
+      navigate(`/postagens/${postId}`);
+    } else {
+      // Se não autenticado, mostra a mensagem e redireciona
+      setMessage("Você precisa estar autenticado para comentar. Redirecionando para a página de login...");
+      setTimeout(() => {
+        navigate('/login');
+      }, 3000); // Redireciona após 3 segundos
+    }
+  }, [isAuthenticated, navigate]);
+
   const handleReadMore = useCallback(
     (id: number) => {
       if (!isAuthenticated) {
@@ -73,7 +86,9 @@ export default function PostPorCategory() {
 
         <div className="row g-4 mb-5">
           {posts.map(post => (
-            <PostCard key={post.id} post={post} onReadMore={handleReadMore} />
+            <div key={post.id} className="col-md-6 col-lg-4">
+              <PostCard key={post.id} post={post} onReadMore={handleReadMore} onCommentAccess={handleCommentAccess} />
+            </div>
           ))}
         </div>
       </section>
