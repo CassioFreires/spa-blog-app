@@ -1,77 +1,58 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import Container from "../../../components/Container/Container.components";
 import { useAuth } from "../../../context/AuthContext";
-import PostService from "../../../services/posts-service";
 
-import PostCard from "../../../components/PostCard/PostCard";
+import Container from "../../../components/Container/Container.components";
+import Section from "../../../components/Section/Section";
+import PostList from "../../../components/Home/PostList";
 import Pagination from "../../../components/Pagination/Pagination";
 import Loader from "../../../components/Loader/Loader";
 import EmptyState from "../../../components/EmptyStateProps/EmptyStateProps";
 import AuthRedirectMessage from "../../../components/AuthRedirect/AuthRedirect";
-import Section from "../../../components/Section/Section";
 
-import type { Post } from "../../../interfaces/post-interface";
+import { usePostsWithLikes } from "../../../hooks/usePostsWithLikes";
 
 export default function PostPage() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const [message, setMessage] = useState("");
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const postService = useRef(new PostService()).current;
+  // Hook centraliza posts + likes + paginação + loading + mensagens
+  const {
+    posts,
+    likes,
+    loading,
+    message,
+    currentPage,
+    totalPages,
+    setCurrentPage,
+    setMessage
+  } = usePostsWithLikes();
 
-  const fetchPosts = useCallback(
-    async (page: number) => {
-      setIsLoading(true);
-      try {
-        const result = await postService.getAll(page);
-        setPosts(result.data || []);
-        setCurrentPage(result.pagination.currentPage || 1);
-        setTotalPages(result.pagination.totalPages || 1);
-      } catch (error) {
-        console.error("Erro ao buscar posts:", error);
-        setMessage("Não foi possível carregar as postagens.");
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [postService]
-  );
-
-  useEffect(() => {
-    fetchPosts(currentPage);
-  }, [currentPage, fetchPosts]);
-
+  // Função para navegar para detalhes do post
   const handleReadMore = useCallback(
     (id: number) => {
       if (!isAuthenticated) {
-        setMessage(
-          "Você precisa estar autenticado para acessar este conteúdo. Redirecionando para login..."
-        );
+        setMessage("Você precisa estar autenticado para acessar este conteúdo.");
+        setTimeout(() => navigate("/login"), 3000);
         return;
       }
       navigate(`/postagens/${id}`);
     },
-    [isAuthenticated, navigate]
+    [isAuthenticated, navigate, setMessage]
   );
-  
-  // Nova função para lidar com o acesso a comentários
-  const handleCommentAccess = useCallback((postId: number) => {
-    if (isAuthenticated) {
-      // Se autenticado, navega para a página de comentários
-      navigate(`/postagens/${postId}`);
-    } else {
-      // Se não autenticado, mostra a mensagem e redireciona
-      setMessage("Você precisa estar autenticado para comentar. Redirecionando para a página de login...");
-      setTimeout(() => {
-        navigate('/login');
-      }, 3000); // Redireciona após 3 segundos
-    }
-  }, [isAuthenticated, navigate]);
+
+  // Função para acessar comentários do post
+  const handleCommentAccess = useCallback(
+    (id: number) => {
+      if (!isAuthenticated) {
+        setMessage("Você precisa estar autenticado para comentar.");
+        setTimeout(() => navigate("/login"), 3000);
+        return;
+      }
+      navigate(`/postagens/${id}#comments`);
+    },
+    [isAuthenticated, navigate, setMessage]
+  );
 
   return (
     <Container>
@@ -79,30 +60,21 @@ export default function PostPage() {
         <header className="text-center mb-5">
           <h1 className="display-5 fw-bold">Todas postagens</h1>
           <p className="lead text-secondary">
-            Explore conteúdos sobre tecnologia, desenvolvimento e inovação —
-            inspirando você a criar.
+            Explore conteúdos sobre tecnologia, desenvolvimento e inovação — inspirando você a criar.
           </p>
         </header>
 
-        {message && !isAuthenticated && (
-          <AuthRedirectMessage message={message} redirectTo="/login" />
-        )}
+        {message && <AuthRedirectMessage message={message} redirectTo="/login" />}
 
-        {isLoading ? (
+        {loading ? (
           <Loader />
         ) : posts.length > 0 ? (
-          <div className="row g-4">
-            {posts.map((post) => (
-              <div key={post.id} className="col-md-6 col-lg-4">
-                <PostCard
-                  post={post}
-                  onReadMore={handleReadMore}
-                  // Passa a função de acesso a comentários para o PostCard
-                  onCommentAccess={handleCommentAccess}
-                />
-              </div>
-            ))}
-          </div>
+          <PostList
+            posts={posts}
+            likes={likes.data}
+            onReadMore={handleReadMore}
+            onCommentAccess={handleCommentAccess}
+          />
         ) : (
           <EmptyState message="Não há posts disponíveis no momento." />
         )}
