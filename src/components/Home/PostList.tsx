@@ -7,8 +7,7 @@ interface PostListProps {
     onReadMore: (id: number) => void;
     onCommentAccess: (id: number) => void;
 }
-
-export default function PostList({ posts, likes = {}, onReadMore, onCommentAccess }: PostListProps) {
+export default function PostList({ posts, likes, onReadMore, onCommentAccess }: PostListProps) {
     if (!posts || posts.length === 0) {
         return <p className="text-center text-muted my-5">Ainda não há posts por aqui. Volte em breve!</p>;
     }
@@ -19,9 +18,9 @@ export default function PostList({ posts, likes = {}, onReadMore, onCommentAcces
                 <div key={post.id} className='col-md-6 col-lg-4'>
                     <PostCard
                         post={post}
-                        initialLikes={likes[post.id] || 0}
                         onReadMore={onReadMore}
                         onCommentAccess={onCommentAccess}
+                        initialLikes={likes}
                     />
                 </div>
             ))}

@@ -10,21 +10,20 @@ type PostCardProps = {
   post: Post;
   onReadMore: (id: number) => void;
   onCommentAccess: (id: number) => void;
-  initialLikes?: number; // Quantidade inicial de likes
+  initialLikes?: Record<number, number>; // Quantidade inicial de likes
 };
 
 export default function PostCard({
   post,
   onReadMore,
   onCommentAccess,
-  initialLikes = 0
+  initialLikes
 }: PostCardProps) {
 
   // Variáveis auxiliares para deixar JSX mais limpo
   const author = post.user_name || post.author || 'Autor desconhecido';
   const categoryDesc = post.category_description ? truncate(post.category_description, 60) : '';
   const imageSrc = post.imageUrl || `https://source.unsplash.com/400x200/?${encodeURIComponent(post.category_name || 'technology')}`;
-  const likes = initialLikes;
   const userLiked = post.userLiked || false;
 
   return (
@@ -61,8 +60,8 @@ export default function PostCard({
           <PostCommented
             postId={post.id}
             onCommentAccess={onCommentAccess}
-            initialLikes={likes}
-            initialUserLiked={userLiked}
+            initialLikes={initialLikes?.[post.id] ?? 0} // pega apenas o número de likes do post
+            initialUserLiked={post.userLiked ?? false}  // booleano
           />
         </div>
       </Card>
