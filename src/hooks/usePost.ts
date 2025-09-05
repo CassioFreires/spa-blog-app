@@ -1,21 +1,30 @@
 import { useState, useEffect } from 'react';
 import type { Post } from '../interfaces/post-interface';
 import PostService from '../services/posts-service';
+import LikeService from '../services/like-service';
+import { useAuth } from '../context/AuthContext';
 
 export function usePosts() {
     const [posts, setPosts] = useState<Post[]>([]);
+    const [likes, setLikes] = useState<Record<number, number>>({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const { token } = useAuth();
 
+    const postService = new PostService();
+    const likeService = new LikeService();
+
+    // Busca os posts
     useEffect(() => {
         let active = true;
-        const service = new PostService();
 
         (async () => {
             try {
                 setLoading(true);
-                const result = await service.getTop();
-                if (active) setPosts(result.posts.data || []);
+                const result = await postService.getTop();
+                if (active) {
+                    setPosts(result.posts.data || []);
+                }
             } catch {
                 if (active) setError('Não foi possível carregar os posts no momento.');
             } finally {
@@ -23,8 +32,24 @@ export function usePosts() {
             }
         })();
 
-        return () => { active = false };
+        return () => {
+            active = false;
+        };
     }, []);
 
-    return { posts, loading, error };
+    // Busca os likes correspondentes aos posts
+    useEffect(() => {
+        async function getAllLikes() {
+            if (posts.length > 0) {
+                const ids = posts.map(item => item.id);
+                const result = await likeService.countByMultiplePosts(ids, String(token));
+                if (result?.data) {
+                    setLikes(result.data);
+                }
+            }
+        }
+        getAllLikes();
+    }, [posts, token]); // roda sempre que os posts mudarem
+
+    return { posts, likes, loading, error };
 }

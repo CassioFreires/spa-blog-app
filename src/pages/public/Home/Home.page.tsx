@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Container from '../../../components/Container/Container.components';
 import Alert from '../../../components/Alert/Alert';
 import HeroSection from '../../../components/Home/HeroSection';
@@ -11,7 +11,7 @@ import Loader from '../../../components/Loader/Loader';
 import './Home.css';
 
 function HomePage() {
-    const { posts, loading, error } = usePosts();
+    const { posts, loading, error, likes } = usePosts();
     const { isAuthenticated, message, redirect } = useAuthRedirect();
 
     const handleReadMore = useCallback(
@@ -54,6 +54,7 @@ function HomePage() {
                     posts={posts}
                     onReadMore={handleReadMore}
                     onCommentAccess={handleCommentAccess}
+                    likes={likes}
                 />
 
                 <ServicesSection />

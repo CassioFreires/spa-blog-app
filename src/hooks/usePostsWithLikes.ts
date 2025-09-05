@@ -64,6 +64,7 @@ export function usePostsWithLikes(token?: string) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token, posts.map(p => p.id).join(',')]); // transforma ids em string para evitar loop infinito
 
+
     return {
         posts,
         likes,

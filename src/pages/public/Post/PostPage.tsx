@@ -14,7 +14,7 @@ import { usePostsWithLikes } from "../../../hooks/usePostsWithLikes";
 
 export default function PostPage() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, token } = useAuth();
 
   // Hook centraliza posts + likes + paginação + loading + mensagens
   const {
@@ -26,7 +26,7 @@ export default function PostPage() {
     totalPages,
     setCurrentPage,
     setMessage
-  } = usePostsWithLikes();
+  } = usePostsWithLikes(String(token));
 
   // Função para navegar para detalhes do post
   const handleReadMore = useCallback(

@@ -89,6 +89,17 @@ export default class LikeService {
     }
   }
 
+  async getUserLiked(postId: number, userId: number, token: string): Promise<IReturnResponse<{ likes_count: number; user_liked: boolean }>> {
+    try {
+      const response = await axios.get(`${this.baseUrl}/liked-by-user/${postId}/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error("[LikeService][getUserLiked]", error);
+      throw error.response?.data || error;
+    }
+  }
   // Deletar um like específico
   async delete(id: number, token: string): Promise<IReturnResponse> {
     try {
