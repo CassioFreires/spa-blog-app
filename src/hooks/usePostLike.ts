@@ -55,21 +55,25 @@ export function usePostLike({
   const toggleLike = async () => {
     if (!userId || !token) return;
 
-    // Feedback instantâneo
-    setUserLiked((prev) => !prev);
-    setLikesCount((prev) => (userLiked ? prev - 1 : prev + 1));
+    // calcula o novo estado
+    const newLiked = !userLiked;
+    const newCount = newLiked
+      ? likesCount + 1
+      : Math.max(likesCount - 1, 0);
+
+    // aplica o novo estado de forma sincronizada
+    setUserLiked(newLiked);
+    setLikesCount(newCount);
 
     try {
-      const result: any = await likeService.toggle({ user_id: userId, post_id: postId }, token);
-      if (result) {
-        setUserLiked(result?.liked ?? userLiked);
-        setLikesCount(result?.likes_count ?? likesCount);
-      }
+      await likeService.toggle({ user_id: userId, post_id: postId }, token);
+      // mantém o optimistic update, não sobrescreve
     } catch (error) {
       console.error("Erro ao atualizar like:", error);
-      // Reverte em caso de erro
-      setUserLiked((prev) => !prev);
-      setLikesCount((prev) => (userLiked ? prev + 1 : prev - 1));
+
+      // reverte se deu erro
+      setUserLiked(userLiked);
+      setLikesCount(likesCount);
     }
   };
 
