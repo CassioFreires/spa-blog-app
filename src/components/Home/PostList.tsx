@@ -8,6 +8,7 @@ interface PostListProps {
     onCommentAccess: (id: number) => void;
 }
 export default function PostList({ posts, likes, onReadMore, onCommentAccess }: PostListProps) {
+
     if (!posts || posts.length === 0) {
         return <p className="text-center text-muted my-5">Ainda não há posts por aqui. Volte em breve!</p>;
     }
@@ -20,7 +21,7 @@ export default function PostList({ posts, likes, onReadMore, onCommentAccess }: 
                         post={post}
                         onReadMore={onReadMore}
                         onCommentAccess={onCommentAccess}
-                        initialLikes={likes}
+                        initialLikes={likes?.[post.id] ?? 0}
                     />
                 </div>
             ))}

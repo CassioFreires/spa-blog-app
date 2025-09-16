@@ -10,7 +10,7 @@ type PostCardProps = {
   post: Post;
   onReadMore: (id: number) => void;
   onCommentAccess: (id: number) => void;
-  initialLikes?: Record<number, number>; // Quantidade inicial de likes
+  initialLikes?: number; // Quantidade inicial de likes
 };
 
 export default function PostCard({
@@ -60,7 +60,7 @@ export default function PostCard({
           <PostCommented
             postId={post.id}
             onCommentAccess={onCommentAccess}
-            initialLikes={initialLikes?.[post.id] ?? 0} // pega apenas o número de likes do post
+            initialLikes={initialLikes ?? 0} // pega apenas o número de likes do post
             initialUserLiked={post.userLiked ?? false}  // booleano
           />
         </div>

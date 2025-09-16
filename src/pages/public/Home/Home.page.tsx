@@ -56,9 +56,7 @@ function HomePage() {
                     onCommentAccess={handleCommentAccess}
                     likes={likes}
                 />
-
                 <ServicesSection />
-
                 <CallToAction />
             </section>
         </Container>
