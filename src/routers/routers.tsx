@@ -50,23 +50,23 @@ export const router = createBrowserRouter([
                     { path: 'perfil', element: <ProfilePage /> },
                     {
                         path: 'perfil/add-postagem',
-                        element: <ProtectedRoute allowedRoles={['admin', 'editor', 'author']} />,
+                        element: <ProtectedRoute allowedRoles={['admin', 'editor', 'author', 'user']} />,
                         children: [{index: true, element: <CreateMyPostPage />}]
                         
                     },
                     {
                         path: 'perfil/minhas-postagens',
-                        element: <ProtectedRoute allowedRoles={['admin', 'editor', 'author']} />,
+                        element: <ProtectedRoute allowedRoles={['admin', 'editor', 'author', 'user']} />,
                         children: [{ index: true, element: <MyPostsPage /> }],
                     },
                     {
                      path: 'perfil/minhas-postagens/editar/:id',
-                    element: <ProtectedRoute allowedRoles={['admin', 'editor', 'author']} />,
+                    element: <ProtectedRoute allowedRoles={['admin', 'editor', 'author', 'user']} />,
                     children: [{index: true, element: <EditeMyPostPage />} ]   
                     },
                     {
                         path: 'perfil/editar',
-                        element: <ProtectedRoute allowedRoles={['admin', 'author', 'editor']} />,
+                        element: <ProtectedRoute allowedRoles={['admin', 'author', 'editor', 'user']} />,
                         children: [{ index: true, element: <EditProfilePage /> }]
                     },
                     {
