@@ -39,13 +39,13 @@ export default class LikeService {
   }
 
   // Quantidade de likes em um post
-  async countByPost(post_id: number, token: string): Promise<IReturnResponse<number>> {
+  async countByPost(post_id: number, token?: string): Promise<IReturnResponse<number>> {
     try {
-      const response = await axios.get(`${this.baseUrl}/count/${post_id}`, {
-        headers: {
-          Authorization: `Berear ${token}`
-        }
-      });
+      const config = token
+        ? { headers: { Authorization: `Bearer ${token}` } }
+        : undefined; // sem token = requisição pública
+
+      const response = await axios.get(`${this.baseUrl}/count/${post_id}`, config);
       return response.data;
     } catch (error: any) {
       console.error("[LikeService][countByPost]", error);
@@ -53,13 +53,16 @@ export default class LikeService {
     }
   }
 
-  async countByMultiplePosts(postIds: number[], token: string): Promise<IReturnResponse<Record<number, number>>> {
+  async countByMultiplePosts(postIds: number[], token?: string): Promise<IReturnResponse<Record<number, number>>> {
     try {
-      const response = await axios.post(`${this.baseUrl}/count-multiple`, { postIds }, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const response = await axios.post(
+        `${this.baseUrl}/count-multiple`,
+        { postIds },
+        token
+          ? { headers: { Authorization: `Bearer ${token}` } }
+          : undefined // sem token = requisição pública
+      );
+
       return response.data;
     } catch (error: any) {
       console.error("[LikeService][countByMultiplePosts]", error);

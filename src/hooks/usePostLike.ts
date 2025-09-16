@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import LikeService from "../services/like-service";
 
-
 type UsePostLikeParams = {
   postId: number;
   userId?: number;
@@ -23,55 +22,57 @@ export function usePostLike({
 
   const likeService = new LikeService();
 
-  // Busca estado inicial do like
   useEffect(() => {
-    if (!userId || !token) {
-      setLoading(false);
-      return;
-    }
-
     let isMounted = true;
 
-    const fetchUserLiked = async () => {
+    const fetchLikes = async () => {
       try {
-        const result: any = await likeService.getUserLiked(postId, userId, token);
-        if (!isMounted) return;
+        setLoading(true);
 
-        setUserLiked(result?.liked ?? initialUserLiked);
-        setLikesCount(result?.likes_count ?? initialLikes);
-      } catch (error) {
-        console.error("Erro ao buscar like:", error);
+        if (userId && token) {
+          // Usuário logado: pega liked do usuário + contagem total
+          const result: any = await likeService.getUserLiked(postId, userId, token);
+          if (!isMounted) return;
+
+          setUserLiked(result?.liked ?? initialUserLiked);
+          setLikesCount(result?.likes_count ?? initialLikes);
+        } else {
+          // Usuário deslogado: pega apenas contagem pública
+          const result: any = await likeService.countByPost(postId);
+          if (!isMounted) return;
+
+          setLikesCount(result?.data ?? initialLikes);
+          setUserLiked(false); // não há info do usuário
+        }
+      } catch (err) {
+        console.error("Erro ao buscar likes:", err);
+        if (isMounted) setLikesCount(initialLikes);
       } finally {
         if (isMounted) setLoading(false);
       }
     };
 
-    fetchUserLiked();
+    fetchLikes();
 
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, [postId, userId, token, initialLikes, initialUserLiked]);
 
-  // Toggle de like/deslike
   const toggleLike = async () => {
-    if (!userId || !token) return;
+    if (!userId || !token) return; // só logados podem dar like
 
-    // calcula o novo estado
     const newLiked = !userLiked;
-    const newCount = newLiked
-      ? likesCount + 1
-      : Math.max(likesCount - 1, 0);
+    const newCount = newLiked ? likesCount + 1 : Math.max(likesCount - 1, 0);
 
-    // aplica o novo estado de forma sincronizada
     setUserLiked(newLiked);
     setLikesCount(newCount);
 
     try {
       await likeService.toggle({ user_id: userId, post_id: postId }, token);
-      // mantém o optimistic update, não sobrescreve
-    } catch (error) {
-      console.error("Erro ao atualizar like:", error);
-
-      // reverte se deu erro
+    } catch (err) {
+      console.error("Erro ao atualizar like:", err);
+      // reverte caso dê erro
       setUserLiked(userLiked);
       setLikesCount(likesCount);
     }
