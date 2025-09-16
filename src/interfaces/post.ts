@@ -3,6 +3,7 @@ export interface IPost {
   title: string;
   subtitle: string;
   content: string;
+  image_url?:string;
   category_id:number;
   image?: string;
   user_name?: string;

@@ -6,6 +6,7 @@ import type { IPost } from '../../../interfaces/post';
 import PostService from '../../../services/posts-service';
 import { useAuth } from '../../../context/AuthContext';
 import { toast } from 'react-toastify';
+import { artigos } from '../../../data/artigos.mocks';
 
 
 function MyPostsPage() {
@@ -100,11 +101,6 @@ function MyPostsPage() {
         </div>
     );
 
-    const getPlaceholderImage = () => {
-        // Retorna uma imagem de placeholder se o post não tiver imagem
-        return 'https://via.placeholder.com/400x200.png?text=Sem+Imagem';
-    };
-
     return (
         <Container>
             <section className="my-articles-page animate-fade-in">
@@ -126,7 +122,7 @@ function MyPostsPage() {
                             <div key={artigo.id} className="article-card animate-card-entry">
                                 <div className="article-image-container">
                                     <img
-                                        src={artigo.image || getPlaceholderImage()}
+                                        src={`http://localhost:3000/${artigo.image_url}`}
                                         alt={artigo.title}
                                         className="article-image"
                                     />
