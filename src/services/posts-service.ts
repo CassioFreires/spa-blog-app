@@ -22,7 +22,6 @@ export default class PostService {
       const response = await axios.get(`${this.url}/api/posts`, {
         params: { page, limit }
       });
-      // CORREÇÃO: Retornando a resposta completa para que o componente lide com a estrutura de paginação
       return response.data;
     } catch (error) {
       console.error(error);
@@ -107,16 +106,24 @@ export default class PostService {
     }
   }
 
-  async updatePostByUser(token: string, post: Partial<Post>) {
+  async updatePostByUser(token: string, id: string, data: FormData | Partial<Post>) {
     try {
-      const response = await axios.patch(`${this.url}/api/posts/updatepostbyuser`, post, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-      });
+      const isFormData = data instanceof FormData;
+
+      const response = await axios.patch(
+        `${this.url}/api/posts/updatepostbyuser/${id}`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            ...(isFormData ? {} : { "Content-Type": "application/json" }),
+          },
+        }
+      );
+
       return response.data;
     } catch (error: any) {
-      throw error?.response?.data || { message: 'Erro ao tentar atualizar post do usuário' };
+      throw error?.response?.data || { message: "Erro ao tentar atualizar post do usuário" };
     }
   }
 
@@ -135,7 +142,7 @@ export default class PostService {
 
   async createPostByUser(token: string, post: Partial<IPost>) {
     try {
-      const response = await axios.post(`${this.url}/api/posts/createpostbyuser`, post,{
+      const response = await axios.post(`${this.url}/api/posts/createpostbyuser`, post, {
         headers: {
           Authorization: `Bearer ${token}`
         },
@@ -143,6 +150,21 @@ export default class PostService {
       return response.data;
     } catch (error: any) {
       throw error?.response?.data || { message: 'Erro ao tentar deletar post do usuário' };
+    }
+  }
+  // Dentro do PostService
+  async createPostByUserFormData(token: string, formData: FormData) {
+    try {
+      const response = await axios.post(`${this.url}/api/posts/createpostbyuser`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data', // importante para upload
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error('[PostService][createPostByUserFormData]', error);
+      throw error.response?.data || error;
     }
   }
 }

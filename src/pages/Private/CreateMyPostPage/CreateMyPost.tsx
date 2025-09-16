@@ -35,6 +35,9 @@ export default function CreateMyPostPage() {
   const [isLoadingCategories, setIsLoadingCategories] = useState<boolean>(false);
   const [categoriesError, setCategoriesError] = useState<string | null>(null);
 
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -49,20 +52,26 @@ export default function CreateMyPostPage() {
       content: '',
     },
   });
+  // Função para lidar com mudança do input file
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    if (file) {
+      setSelectedImage(file);
+      setPreviewImage(URL.createObjectURL(file)); // preview da imagem
+    } else {
+      setSelectedImage(null);
+      setPreviewImage(null);
+    }
+  };
 
-  // --- Carrega categorias do backend (ex: primeira página com 100 itens)
   useEffect(() => {
     const loadCategories = async () => {
       try {
         setIsLoadingCategories(true);
         setCategoriesError(null);
 
-        // se seu backend retorna { data, page, total }, ajuste a leitura abaixo:
         const res = await categoriesService.getAll(1, 100);
 
-        // casos comuns de resposta:
-        // 1) { data: ICategory[] }    -> use res.data
-        // 2) ICategory[] diretamente  -> use res
         const list: ICategory[] = Array.isArray(res) ? res : (res?.data ?? []);
         setCategories(list);
       } catch (err: any) {
@@ -84,33 +93,26 @@ export default function CreateMyPostPage() {
     }
 
     try {
-      await postService.createPostByUser(String(token), {
-        ...data,
-        // CORREÇÃO: O backend não precisa do `id` do usuário no payload, apenas do `category_id`
-        // O `user_id` é injetado pelo backend através do token.
-        category_id: Number(data.category_id), // garante número
-      });
+      const formData = new FormData();
+      formData.append('title', data.title);
+      formData.append('subtitle', data.subtitle);
+      formData.append('category_id', String(Number(data.category_id))); // garante que seja numérico
+      formData.append('content', data.content);
+
+      if (selectedImage) {
+        formData.append('image', selectedImage);
+      }
+
+      await postService.createPostByUserFormData(token, formData);
 
       toast.success('Artigo criado com sucesso!');
       navigate('/painel/perfil/minhas-postagens');
     } catch (err: any) {
       console.error('Erro ao criar artigo:', err);
-      // CORREÇÃO: Tratar erros do backend e re-habilitar o botão
-      if (err.errors) {
-        // Se a resposta de erro do backend for um array de erros,
-        // mapeamos e usamos setError do react-hook-form
-        Object.entries(err.errors).forEach(([field, messages]) => {
-            if (Array.isArray(messages)) {
-              setError(field as keyof CreatePostFormData, {
-                type: 'server',
-                message: messages.join(', '),
-              });
-            }
-        });
-      }
       toast.error(err?.message || 'Erro ao criar o artigo. Tente novamente.');
     }
   };
+
 
   return (
     <Container>
@@ -168,8 +170,8 @@ export default function CreateMyPostPage() {
                 {isLoadingCategories
                   ? 'Carregando categorias...'
                   : categoriesError
-                  ? 'Erro ao carregar categorias'
-                  : 'Selecione uma categoria'}
+                    ? 'Erro ao carregar categorias'
+                    : 'Selecione uma categoria'}
               </option>
 
               {categories?.map((cat) => (
@@ -208,6 +210,26 @@ export default function CreateMyPostPage() {
             ></textarea>
             {errors.content && (
               <small className="text-danger">{errors.content.message}</small>
+            )}
+          </div>
+
+          {/* UPLOAD */}
+          <div className="form-group mb-4">
+            <label htmlFor="image">Imagem do post</label>
+            <input
+              type="file"
+              id="image"
+              className="form-control"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+            {previewImage && (
+              <img
+                src={previewImage}
+                alt="Pré-visualização"
+                className="mt-2 img-thumbnail"
+                style={{ maxHeight: '200px' }}
+              />
             )}
           </div>
 

@@ -3,7 +3,6 @@ import { useAuth } from '../../context/AuthContext';
 
 function Sidebar() {
   const { user } = useAuth();
-  console.log(user)
   return (
     <aside className="sidebar bg-dark text-white p-3">
       <h4 className="mb-4">Painel</h4>

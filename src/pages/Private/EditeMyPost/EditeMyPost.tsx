@@ -79,19 +79,23 @@ export default function EditeMyPostPage() {
 
         try {
             setSaving(true);
-            await postService.updatePostByUser(String(token), post);
 
-            // Mensagem de sucesso com toast
-            toast.success('Artigo atualizado com sucesso!');
+            const formData = new FormData();
+            formData.append("title", post.title);
+            formData.append("subtitle", post.subtitle);
+            formData.append("content", post.content);
 
-            // Redireciona após 1.2s para o usuário ver o toast
-            setTimeout(() => {
-                navigate(`/painel/perfil/minhas-postagens`);
-            }, 1200);
+            // só manda se tiver imagem nova
+            if ((post as any).image) {
+                formData.append("image", (post as any).image);
+            }
 
+            await postService.updatePostByUser(String(token), id, formData);
+
+            toast.success("Artigo atualizado com sucesso!");
+            setTimeout(() => navigate("/painel/perfil/minhas-postagens"), 1200);
         } catch (err: any) {
-            console.error('Erro ao atualizar artigo:', err);
-            // Mensagem de erro com toast
+            console.error("Erro ao atualizar artigo:", err);
             toast.error(err.message || "Erro ao salvar o artigo. Tente novamente.");
         } finally {
             setSaving(false);
@@ -101,9 +105,15 @@ export default function EditeMyPostPage() {
     // Verifica se o post foi alterado
     const hasChanged = () => {
         if (!initialPost || !post) return false;
-        return post.title !== initialPost.title ||
+
+        const textChanged =
+            post.title !== initialPost.title ||
             post.subtitle !== initialPost.subtitle ||
             post.content !== initialPost.content;
+
+        const imageChanged = Boolean((post as any).image);
+
+        return textChanged || imageChanged;
     };
 
     if (loading) {
@@ -178,7 +188,38 @@ export default function EditeMyPostPage() {
                             required
                         ></textarea>
                     </div>
-                    <button type="submit" className="btn btn-primary" disabled={saving || !hasChanged()}>
+                    <div className="mb-3">
+                        <label className="form-label">Imagem Atual</label>
+                        {post.image_url ? (
+                            <div>
+                                <img
+                                    src={`http://localhost:3000/${post.image_url.replace(/\\/g, "/")}`}
+                                    alt="Imagem do post"
+                                    style={{ maxWidth: "200px", marginBottom: "10px" }}
+                                />
+                            </div>
+                        ) : (
+                            <p>Nenhuma imagem cadastrada.</p>
+                        )}
+
+                        <input
+                            type="file"
+                            className="form-control"
+                            name="image"
+                            accept="image/*"
+                            onChange={(e) => {
+                                if (e.target.files && e.target.files[0]) {
+                                    const file = e.target.files[0];
+                                    setPost({ ...post, image: file } as any); // adiciona arquivo no estado
+                                }
+                            }}
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        className="btn btn-primary"
+                        disabled={saving || !hasChanged()}
+                    >
                         {saving ? 'Salvando...' : 'Salvar Alterações'}
                     </button>
                 </form>
