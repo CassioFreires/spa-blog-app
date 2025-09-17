@@ -100,7 +100,7 @@ export default function CreateMyPostPage() {
       formData.append('content', data.content);
 
       if (selectedImage) {
-        formData.append('image', selectedImage);
+        formData.append('postImage', selectedImage);
       }
 
       await postService.createPostByUserFormData(token, formData);

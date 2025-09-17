@@ -24,7 +24,6 @@ function MyPostsPage() {
             try {
                 setLoading(true);
                 const response = await postService.getAllPostsByUser(String(token));
-
                 // Se o array de posts estiver vazio, 'response.data' pode ser a mensagem de erro.
                 if (Array.isArray(response.data)) {
                     setPosts(response.data);
@@ -33,7 +32,6 @@ function MyPostsPage() {
                     setPosts([]);
                     setError(response.message || 'Nenhum artigo encontrado.');
                 }
-
             } catch (err: any) {
                 console.error('Erro ao buscar artigos:', err);
                 setError(err.message || 'Erro ao carregar os artigos. Tente novamente.');
@@ -92,15 +90,6 @@ function MyPostsPage() {
             <p>Carregando seus artigos...</p>
         </div>
     );
-
-    const ErrorState = () => (
-        <div className="error-state text-center fade-in">
-            <i className="bi bi-exclamation-triangle display-2 mb-3 text-danger"></i>
-            <h3>Ocorreu um erro</h3>
-            <p className="text-danger">{error}</p>
-        </div>
-    );
-
     return (
         <Container>
             <section className="my-articles-page animate-fade-in">
@@ -122,7 +111,7 @@ function MyPostsPage() {
                             <div key={artigo.id} className="article-card animate-card-entry">
                                 <div className="article-image-container">
                                     <img
-                                        src={`http://localhost:3000/${artigo.image_url}`}
+                                        src={`http://localhost:3000${artigo.image_url}`}
                                         alt={artigo.title}
                                         className="article-image"
                                     />

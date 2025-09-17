@@ -23,14 +23,17 @@ function ProfilePage() {
       </Container>
     );
   }
-
   return (
     <Container>
       <section className="profile-container">
         <div className="profile-card animate-card-entry">
           <div className="profile-header">
             <img
-              src={user.avatarUrl || avatar}
+              src={
+                user.avatarUrl
+                  ? `http://localhost:3000${user.avatarUrl}` // URL completa do backend
+                  : avatar // fallback
+              }
               alt={`Avatar de ${user.name}`}
               className="profile-avatar animate-avatar-entry"
             />

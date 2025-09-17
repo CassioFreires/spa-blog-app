@@ -87,7 +87,7 @@ export default function EditeMyPostPage() {
 
             // só manda se tiver imagem nova
             if ((post as any).image) {
-                formData.append("image", (post as any).image);
+                formData.append("postImage", (post as any).image);
             }
 
             await postService.updatePostByUser(String(token), id, formData);
@@ -193,7 +193,7 @@ export default function EditeMyPostPage() {
                         {post.image_url ? (
                             <div>
                                 <img
-                                    src={`http://localhost:3000/${post.image_url.replace(/\\/g, "/")}`}
+                                    src={`http://localhost:3000${post.image_url}`}
                                     alt="Imagem do post"
                                     style={{ maxWidth: "200px", marginBottom: "10px" }}
                                 />
@@ -205,7 +205,7 @@ export default function EditeMyPostPage() {
                         <input
                             type="file"
                             className="form-control"
-                            name="image"
+                            name="postImage"
                             accept="image/*"
                             onChange={(e) => {
                                 if (e.target.files && e.target.files[0]) {

@@ -15,7 +15,7 @@ const userSchema = z.object({
   name: z.string().min(2, "Nome muito curto"),
   email: z.string().email("Email inválido"),
   bio: z.string().optional(),
-  avatarUrl: z.string().url("URL inválida").optional().or(z.literal("")),
+  avatarUrl: z.string().optional(),
 });
 
 type FormData = {
@@ -28,15 +28,17 @@ type FormData = {
 function EditProfilePage() {
   const { user, token, login } = useAuth()!;
   const navigate = useNavigate();
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   // Estado do formulário
   const [formData, setFormData] = useState<FormData>({
     name: user?.name || '',
     email: user?.email || '',
     bio: user?.bio || '',
-    avatarUrl: user?.avatarUrl || '',
+    avatarUrl: user?.avatarUrl || '', // pega do user vindo do backend
   });
-  
+
+
   // Estado de loading para o botão
   const [loading, setLoading] = useState(false);
 
@@ -46,6 +48,18 @@ function EditProfilePage() {
     formData.email !== user?.email ||
     formData.bio !== user?.bio ||
     formData.avatarUrl !== user?.avatarUrl;
+
+
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setAvatarFile(e.target.files[0]);
+
+      // Exibir preview antes do upload
+      const previewUrl = URL.createObjectURL(e.target.files[0]);
+      setFormData(prev => ({ ...prev, avatarUrl: previewUrl }));
+    }
+  };
 
   // Atualiza os valores do form
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -58,10 +72,10 @@ function EditProfilePage() {
     e.preventDefault();
     if (!isChanged || !user?.id) return;
 
-    // Validação com Zod
     const parseResult = userSchema.safeParse(formData);
     if (!parseResult.success) {
-      const firstError = Object.values(parseResult.error.flatten().fieldErrors)[0]?.[0] || "Erro no formulário";
+      const firstError =
+        Object.values(parseResult.error.flatten().fieldErrors)[0]?.[0] || "Erro no formulário";
       toast.error(firstError);
       return;
     }
@@ -69,15 +83,23 @@ function EditProfilePage() {
     setLoading(true);
 
     try {
-      const updatedUser = await new UserService().update(user.id, formData, token!);
+      let finalData: any | typeof formData = formData;
+
+      if (avatarFile) {
+        const formDataToSend = new FormData();
+        formDataToSend.append("name", formData.name);
+        formDataToSend.append("email", formData.email);
+        formDataToSend.append("bio", formData.bio);
+        if (avatarFile) formDataToSend.append("avatar", avatarFile); // aqui envia o arquivo
+
+        finalData = formDataToSend;
+      }
+
+      const updatedUser = await new UserService().update(user.id, finalData, token!);
       login(updatedUser, token!);
 
       toast.success("Perfil atualizado com sucesso!");
-
-      // Pequeno atraso para garantir que o toast seja exibido antes da navegação
-      setTimeout(() => {
-        navigate("/painel/perfil");
-      }, 500); 
+      setTimeout(() => navigate("/painel/perfil"), 500);
 
     } catch (err: any) {
       console.error("Erro ao atualizar perfil:", err);
@@ -108,17 +130,24 @@ function EditProfilePage() {
             {/* Avatar */}
             <div className="text-center">
               <img
-                src={formData.avatarUrl || "https://i.pravatar.cc/150"}
+                src={
+                  // Se tiver preview do arquivo selecionado, usa ele
+                  avatarFile ? URL.createObjectURL(avatarFile)
+                    // Se tiver avatar do backend, monta a URL completa
+                    : user?.avatarUrl
+                      ? `http://localhost:3000${user.avatarUrl}`
+                      : "https://i.pravatar.cc/150" // fallback
+                }
                 alt="Avatar"
                 className="edit-avatar mb-3"
               />
-              <InputField
-                label="URL do Avatar"
-                name="avatarUrl"
-                type="url"
-                placeholder="Digite a URL do avatar"
-                value={formData.avatarUrl}
-                onChange={handleChange}
+
+              {/* Upload de arquivo */}
+              <input
+                type="file"
+                accept="image/*"
+                className="form-control mb-2"
+                onChange={handleFileChange}
               />
             </div>
 
