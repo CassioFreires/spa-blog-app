@@ -74,11 +74,11 @@ export default function CommentItem({
         <p className="comment-text">{comment.content}</p>
       )}
 
-      <div className="comment-footer mt-2">
+      {/* <div className="comment-footer mt-2">
         <button className="btn btn-sm btn-outline-primary" onClick={() => onLike(comment.id)}>
           👍 Curtir
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }
