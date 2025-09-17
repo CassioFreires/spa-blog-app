@@ -11,5 +11,5 @@ export interface Post {
   createdAt: Date | string;
   updatedAt?: Date | string;
   user_name?: string;
-  imageUrl?: string;
+  image_url?: string;
 }

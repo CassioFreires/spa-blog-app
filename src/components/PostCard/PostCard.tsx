@@ -5,6 +5,8 @@ import type { Post } from '../../interfaces/post-interface';
 import { truncate } from '../../utils/text';
 import { formatDateBR } from '../../utils/date';
 import './PostCard.css';
+import { useAuth } from '../../context/AuthContext';
+
 
 type PostCardProps = {
   post: Post;
@@ -13,6 +15,8 @@ type PostCardProps = {
   initialLikes?: number; // Quantidade inicial de likes
 };
 
+const avatar = 'https://i.pravatar.cc/150?img=11';
+
 export default function PostCard({
   post,
   onReadMore,
@@ -20,17 +24,18 @@ export default function PostCard({
   initialLikes
 }: PostCardProps) {
 
+  const { user } = useAuth();
+
   // Variáveis auxiliares para deixar JSX mais limpo
   const author = post.user_name || post.author || 'Autor desconhecido';
   const categoryDesc = post.category_description ? truncate(post.category_description, 60) : '';
-  const imageSrc = post.imageUrl || `https://source.unsplash.com/400x200/?${encodeURIComponent(post.category_name || 'technology')}`;
-  const userLiked = post.userLiked || false;
-
   return (
     <article>
       <Card>
         <img
-          src={imageSrc}
+          src={
+              `http://localhost:3000${post.image_url}` // URL completa do backend
+          }
           className="card-img-top"
           alt={post.title}
           loading="lazy"
