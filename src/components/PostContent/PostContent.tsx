@@ -28,7 +28,7 @@ export default function PostContent({ post }: PostContentProps) {
   )}`;
 
   return (
-    <div className="card-article p-4 shadow-sm rounded-3">
+    <div className="card-article p-4 shadow-sm rounded-3 mb-5">
       {category_name && <span className="badge bg-primary mb-3">{category_name}</span>}
 
       <header className="text-center mb-4">

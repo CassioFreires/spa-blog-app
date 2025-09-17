@@ -23,12 +23,10 @@ export interface ILike {
 
 
 export default class LikeService {
-  private baseUrl = "http://localhost:3000/api/likes"; // rota base da API no backend
-
   // Curtir ou descurtir (toggle)
   async toggle(payload: ICreateLikeDto, token: string): Promise<IReturnResponse> {
     try {
-      const response = await axios.post(`${this.baseUrl}/toggle`, payload, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/likes/toggle`, payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
@@ -45,7 +43,7 @@ export default class LikeService {
         ? { headers: { Authorization: `Bearer ${token}` } }
         : undefined; // sem token = requisição pública
 
-      const response = await axios.get(`${this.baseUrl}/count/${post_id}`, config);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/likes/count/${post_id}`, config);
       return response.data;
     } catch (error: any) {
       console.error("[LikeService][countByPost]", error);
@@ -55,9 +53,7 @@ export default class LikeService {
 
   async countByMultiplePosts(postIds: number[], token?: string): Promise<IReturnResponse<Record<number, number>>> {
     try {
-      const response = await axios.post(
-        `${this.baseUrl}/count-multiple`,
-        { postIds },
+      const response = await axios.post( `${import.meta.env.VITE_API_URL}/api/likes/count-multiple`,{ postIds },
         token
           ? { headers: { Authorization: `Bearer ${token}` } }
           : undefined // sem token = requisição pública
@@ -73,7 +69,7 @@ export default class LikeService {
   // Buscar todos os likes
   async getAll(): Promise<IReturnResponse<ILike[]>> {
     try {
-      const response = await axios.get(this.baseUrl);
+      const response = await axios.get(import.meta.env.VITE_API_URL);
       return response.data;
     } catch (error: any) {
       console.error("[LikeService][getAll]", error);
@@ -84,7 +80,7 @@ export default class LikeService {
   // Buscar like por ID
   async getById(id: number): Promise<IReturnResponse<ILike>> {
     try {
-      const response = await axios.get(`${this.baseUrl}/${id}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/likes/${id}`);
       return response.data;
     } catch (error: any) {
       console.error("[LikeService][getById]", error);
@@ -94,7 +90,7 @@ export default class LikeService {
 
   async getUserLiked(postId: number, userId: number, token: string): Promise<IReturnResponse<{ likes_count: number; user_liked: boolean }>> {
     try {
-      const response = await axios.get(`${this.baseUrl}/liked-by-user/${postId}/${userId}`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/likes/liked-by-user/${postId}/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
@@ -106,7 +102,7 @@ export default class LikeService {
   // Deletar um like específico
   async delete(id: number, token: string): Promise<IReturnResponse> {
     try {
-      const response = await axios.delete(`${this.baseUrl}/${id}`, {
+      const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/likes/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;

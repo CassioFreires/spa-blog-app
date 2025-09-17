@@ -7,7 +7,7 @@ export default class CategoriesService {
   // Pega todas as categorias com paginação
   async getAll(page?: number, limit?: number) {
     try {
-      const response = await axios.get(this.baseUrl, { params: { page, limit } });
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/categories`, { params: { page, limit } });
       return response.data;
     } catch (error: any) {
       console.error("Erro ao buscar categorias:", error);
@@ -18,7 +18,7 @@ export default class CategoriesService {
   // Pega categoria por ID
   async getById(id: string | number) {
     try {
-      const response = await axios.get(`${this.baseUrl}/${id}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/categories/${id}`);
       return response.data;
     } catch (error: any) {
       console.error(`Erro ao buscar categoria ${id}:`, error);
@@ -29,7 +29,7 @@ export default class CategoriesService {
   // Cria uma nova categoria
   async create(category: ICategory) {
     try {
-      const response = await axios.post(this.baseUrl, category);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/categories`, category);
       return response.data;
     } catch (error: any) {
       console.error("Erro ao criar categoria:", error);
@@ -40,7 +40,7 @@ export default class CategoriesService {
   // Atualiza categoria
   async update(id: string | number, category: Partial<ICategory>) {
     try {
-      const response = await axios.put(`${this.baseUrl}/${id}`, category);
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/categories/${id}`, category);
       return response.data;
     } catch (error: any) {
       console.error(`Erro ao atualizar categoria ${id}:`, error);
@@ -51,7 +51,7 @@ export default class CategoriesService {
   // Deleta categoria
   async delete(id: string | number) {
     try {
-      const response = await axios.delete(`${this.baseUrl}/${id}`);
+      const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/categories/${id}`);
       return response.data;
     } catch (error: any) {
       console.error(`Erro ao deletar categoria ${id}:`, error);
