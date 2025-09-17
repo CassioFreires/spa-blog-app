@@ -21,11 +21,7 @@ function SigninPage() {
     try {
       const result = await authService.signin(form.email, form.senha);
       const user = result.result.user;
-      localStorage.setItem('token', result.token);
       login(user, result.token); 
-
-
-      login(user, result.token); // Atualiza contexto
       navigate('/painel/perfil', { replace: true });
     } catch (error: any) {
       setErro(error.message || 'Usuário ou senha está inválido');
