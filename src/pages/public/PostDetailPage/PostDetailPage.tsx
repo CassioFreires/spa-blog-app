@@ -162,7 +162,7 @@ export default function PostDetailPage() {
         )}
 
         {comments.length > 2 && (
-          <button className="view-comments-toggle" onClick={() => setShowAllComments(!showAllComments)}>
+          <button className="view-comments-toggle mb-5" onClick={() => setShowAllComments(!showAllComments)}>
             {showAllComments ? "Ver menos 🔼" : `Ver todos os ${comments.length} comentários 🔽`}
           </button>
         )}

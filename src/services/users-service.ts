@@ -11,12 +11,11 @@ export type IUser = {
 };
 
 export default class UserService {
-    private url = 'http://localhost:3000'; // ajuste para sua API
 
     // Buscar todos os usuários
     async getAll() {
         try {
-            const response = await axios.get(`${this.url}/api/users`);
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/users`);
             return response.data;
         } catch (error: any) {
             console.error('Erro ao buscar usuários:', error);
@@ -27,7 +26,7 @@ export default class UserService {
     // Buscar usuário por ID
     async getById(id: string | number) {
         try {
-            const response = await axios.get(`${this.url}/api/users/${id}`);
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/users/${id}`);
             return response.data;
         } catch (error: any) {
             console.error('Erro ao buscar usuário por ID:', error);
@@ -38,7 +37,7 @@ export default class UserService {
     // Criar um novo usuário
     async create(user: IUser) {
         try {
-            const response = await axios.post(`${this.url}/api/users`, user);
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/users`, user);
             return response.data;
         } catch (error: any) {
             console.error('Erro ao criar usuário:', error);
@@ -50,7 +49,7 @@ export default class UserService {
     async update(id: string | number, user: Partial<IUser>, token: string) {
         try {
             const response = await axios.patch(
-                `${this.url}/api/users/${id}`,
+                `${import.meta.env.VITE_API_URL}/api/users/${id}`,
                 user,
                 {
                     headers: {
@@ -67,7 +66,7 @@ export default class UserService {
     // Deletar usuário
     async delete(id: string | number) {
         try {
-            const response = await axios.delete(`${this.url}/api/users/${id}`);
+            const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/users/${id}`);
             return response.data;
         } catch (error: any) {
             console.error('Erro ao deletar usuário:', error);
@@ -78,7 +77,7 @@ export default class UserService {
     // Buscar usuário por email (opcional, se a API tiver endpoint)
     async getByEmail(email: string) {
         try {
-            const response = await axios.get(`${this.url}/api/users/byemail/${email}`);
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/users/byemail/${email}`);
             return response.data;
         } catch (error: any) {
             console.error('Erro ao buscar usuário por email:', error);

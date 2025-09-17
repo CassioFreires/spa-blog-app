@@ -25,14 +25,12 @@ export interface IUpdateCommentDto {
 }
 
 export default class CommentService {
-    // URL base para o endpoint de comentários
-    private baseUrl = 'http://localhost:3000/api/comments';
 
     // Busca todos os comentários de um post específico
     async getAllByPostId(postId: number) {
         try {
             // O endpoint foi inferido com base na sua função de backend 'getAllCommentsByPost'
-            const response = await axios.get(`${this.baseUrl}/post/${postId}`);
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/comments/post/${postId}`);
             return response.data;
         } catch (error: any) {
             console.error("Erro ao buscar comentários:", error);
@@ -43,7 +41,7 @@ export default class CommentService {
     // Cria um novo comentário
     async create(data: ICreateCommentDto, token: string) {
         try {
-            const response = await axios.post(this.baseUrl, data, {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/comments`, data, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -58,7 +56,7 @@ export default class CommentService {
     // Atualiza um comentário por ID
     async update(commentId: number, data: IUpdateCommentDto, token:string) {
         try {
-            const response = await axios.patch(`${this.baseUrl}/${commentId}`, data, {
+            const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/comments/${commentId}`, data, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -73,7 +71,7 @@ export default class CommentService {
     // Deleta um comentário por ID
     async delete(commentId: number, token:string) {
         try {
-            const response = await axios.delete(`${this.baseUrl}/${commentId}`, {
+            const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/comments/${commentId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
