@@ -46,17 +46,22 @@ export default class UserService {
     }
 
     // Atualizar usuário
-    async update(id: string | number, user: Partial<IUser>, token: string) {
+    async update(id: string | number,user: Partial<IUser> | FormData, token: string) {
         try {
+            const isFormData = user instanceof FormData;
+
             const response = await axios.patch(
                 `${import.meta.env.VITE_API_URL}/api/users/${id}`,
                 user,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`, // <--- aqui
+                        Authorization: `Bearer ${token}`,
+                        // Se for FormData, seta o content-type para multipart/form-data
+                        ...(isFormData ? { "Content-Type": "multipart/form-data" } : {}),
                     },
                 }
             );
+
             return response.data;
         } catch (error: any) {
             console.error('Erro ao atualizar usuário:', error);
