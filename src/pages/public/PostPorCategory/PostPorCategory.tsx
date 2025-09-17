@@ -1,69 +1,42 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Container from "../../../components/Container/Container.components";
-import PostService from "../../../services/posts-service";
-import type { Post } from "../../../interfaces/post-interface";
 import { useAuth } from "../../../context/AuthContext";
 import PostCard from "../../../components/PostCard/PostCard";
 import Alert from "../../../components/Alert/Alert";
 import Loader from "../../../components/Loader/Loader";
 import BackButton from "../../../components/BackButton/BackButton";
+import { usePostsByCategoryWithLikes } from "../../../hooks/usePostsByCategoryWithLikes";
 
 export default function PostPorCategory() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
-  const postService = useRef(new PostService()).current;
+  const { isAuthenticated, token } = useAuth();
   const redirectTimeoutRef = useRef<number | null>(null);
-
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>("");
 
-  const fetchPosts = useCallback(async () => {
-    if (!slug) return;
-    setLoading(true);
-    setError(null);
+  // Usando hook para posts e likes
+  const { posts, likes, loading } = usePostsByCategoryWithLikes(slug || "", token || "");
 
-    try {
-      const response = await postService.getPostsByCategories(slug);
-      setPosts(response.data.posts || []);
-    } catch (err: any) {
-      setError(err.message || "Erro ao buscar posts");
-    } finally {
-      setLoading(false);
-    }
-  }, [slug, postService]);
-
-  useEffect(() => {
-    fetchPosts();
-  }, [fetchPosts]);
-
-   const handleCommentAccess = useCallback((postId: number) => {
+  // Função para acessar comentários
+  const handleCommentAccess = useCallback((postId: number) => {
     if (isAuthenticated) {
-      // Se autenticado, navega para a página de comentários
       navigate(`/postagens/${postId}`);
     } else {
-      // Se não autenticado, mostra a mensagem e redireciona
       setMessage("Você precisa estar autenticado para comentar. Redirecionando para a página de login...");
-      setTimeout(() => {
-        navigate('/login');
-      }, 3000); // Redireciona após 3 segundos
+      setTimeout(() => navigate("/login"), 3000);
     }
   }, [isAuthenticated, navigate]);
 
-  const handleReadMore = useCallback(
-    (id: number) => {
-      if (!isAuthenticated) {
-        setMessage("Você precisa estar autenticado para acessar este conteúdo. Redirecionando para login...");
-        redirectTimeoutRef.current = window.setTimeout(() => navigate("/login"), 4000);
-        return;
-      }
-      navigate(`/postagens/${id}`);
-    },
-    [isAuthenticated, navigate]
-  );
+  // Função para ler mais
+  const handleReadMore = useCallback((id: number) => {
+    if (!isAuthenticated) {
+      setMessage("Você precisa estar autenticado para acessar este conteúdo. Redirecionando para login...");
+      redirectTimeoutRef.current = window.setTimeout(() => navigate("/login"), 4000);
+      return;
+    }
+    navigate(`/postagens/${id}`);
+  }, [isAuthenticated, navigate]);
 
   useEffect(() => {
     return () => {
@@ -74,8 +47,11 @@ export default function PostPorCategory() {
   }, []);
 
   if (loading) return <Container><Loader message="Carregando postagens..." /></Container>;
-  if (error) return <Container><Alert type="danger">{error}</Alert></Container>;
-  if (posts.length === 0) return <Container><p className="text-center py-5 text-muted">Nenhum artigo encontrado.</p></Container>;
+  if (!posts || posts.length === 0) return (
+    <Container>
+      <p className="text-center py-5 text-muted">Nenhum artigo encontrado.</p>
+    </Container>
+  );
 
   return (
     <Container>
@@ -87,7 +63,12 @@ export default function PostPorCategory() {
         <div className="row g-4 mb-5">
           {posts.map(post => (
             <div key={post.id} className="col-md-6 col-lg-4">
-              <PostCard key={post.id} post={post} onReadMore={handleReadMore} onCommentAccess={handleCommentAccess} />
+              <PostCard 
+                post={post} 
+                initialLikes={likes[post.id] || 0} // passando os likes para o PostCard
+                onReadMore={handleReadMore} 
+                onCommentAccess={handleCommentAccess} 
+              />
             </div>
           ))}
         </div>
