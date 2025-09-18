@@ -203,3 +203,25 @@
   color: #165ec9;
   text-decoration: underline;
 }
+
+
+.view-comments-btn {
+  margin-top: 16px;
+  padding: 6px 14px;
+  background-color: #f5f5f5; /* cinza claro */
+  color: #333; /* texto escuro */
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 20px; /* arredondado */
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.view-comments-btn:hover {
+  background-color: #e0e0e0; /* leve escurecimento */
+  transform: translateY(-1px); /* micro interação */
+}

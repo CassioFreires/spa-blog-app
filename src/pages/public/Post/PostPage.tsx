@@ -74,6 +74,7 @@ export default function PostPage() {
             likes={likes.data}
             onReadMore={handleReadMore}
             onCommentAccess={handleCommentAccess}
+            isAuthenticated={isAuthenticated} 
           />
         ) : (
           <EmptyState message="Não há posts disponíveis no momento." />
