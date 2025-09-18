@@ -8,8 +8,8 @@ export interface Post {
   category?: string;
   category_name: string;
   category_description?: string;
-  createdAt: Date | string;
-  updatedAt?: Date | string;
+  createAt: Date | string;
+  updatAt?: Date | string;
   user_name?: string;
   image_url?: string;
 }

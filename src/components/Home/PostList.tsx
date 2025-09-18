@@ -6,8 +6,9 @@ interface PostListProps {
     likes?: Record<number, number>; // Novo: quantidade de likes por post
     onReadMore: (id: number) => void;
     onCommentAccess: (id: number) => void;
+    isAuthenticated: boolean; // 👈 Novo
 }
-export default function PostList({ posts, likes, onReadMore, onCommentAccess }: PostListProps) {
+export default function PostList({ posts, likes, onReadMore, onCommentAccess, isAuthenticated }: PostListProps) {
 
     if (!posts || posts.length === 0) {
         return <p className="text-center text-muted my-5">Ainda não há posts por aqui. Volte em breve!</p>;
@@ -22,6 +23,7 @@ export default function PostList({ posts, likes, onReadMore, onCommentAccess }: 
                         onReadMore={onReadMore}
                         onCommentAccess={onCommentAccess}
                         initialLikes={likes?.[post.id] ?? 0}
+                        isAuthenticated={isAuthenticated} // 👈 Passa para o PostCard
                     />
                 </div>
             ))}

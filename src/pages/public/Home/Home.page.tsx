@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import Container from '../../../components/Container/Container.components';
 import Alert from '../../../components/Alert/Alert';
 import HeroSection from '../../../components/Home/HeroSection';
@@ -55,6 +55,7 @@ function HomePage() {
                     onReadMore={handleReadMore}
                     onCommentAccess={handleCommentAccess}
                     likes={likes}
+                    isAuthenticated={isAuthenticated} // 👈 Passa o estado de autenticação
                 />
                 <ServicesSection />
                 <CallToAction />

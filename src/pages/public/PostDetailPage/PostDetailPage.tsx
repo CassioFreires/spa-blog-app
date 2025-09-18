@@ -15,6 +15,8 @@ import CommentItem from "../../../components/PostDetail/CommentItem";
 import CommentForm from "../../../components/PostDetail/CommentForm";
 import type { Post } from "../../../interfaces/post-interface";
 import CommentService from "../../../services/comments-service";
+import './PostDetailPage.css'
+
 
 export default function PostDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -162,8 +164,11 @@ export default function PostDetailPage() {
         )}
 
         {comments.length > 2 && (
-          <button className="view-comments-toggle mb-5" onClick={() => setShowAllComments(!showAllComments)}>
-            {showAllComments ? "Ver menos 🔼" : `Ver todos os ${comments.length} comentários 🔽`}
+          <button
+            className="view-comments-btn"
+            onClick={() => setShowAllComments(!showAllComments)}
+          >
+            {showAllComments ? "Ver menos ▲" : `Ver todos os ${comments.length} comentários ▼`}
           </button>
         )}
       </Section>
