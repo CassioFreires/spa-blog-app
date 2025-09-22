@@ -17,16 +17,29 @@ export function usePostsWithLikes(token?: string) {
     const [message, setMessage] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [statusMessage, setStatusMessage] = useState(''); // para posts/filtro
+    const [categoryQuery, setCategoryQuery] = useState('');
+    const [sortQuery, setSortQuery] = useState('');
 
-    // Função para buscar posts e likes
-    const fetchPosts = useCallback(async (page: number) => {
+    // Função para buscar posts e likes, agora com os novos parâmetros de filtro
+    const fetchPosts = useCallback(async (page: number, limit: number = 6, query = '', category = '', sort = '') => {
         setLoading(true);
+        setMessage(''); // Limpar mensagens de erro anteriores
+        setStatusMessage(''); // Limpar mensagens de status
+
         try {
-            const result = await postService.getAll(page);
+            // Chamada à API com todos os parâmetros de filtro
+            const result = await postService.getAll(page, limit, query, category, sort);
             const postsData = result.data || [];
+
             setPosts(postsData);
             setCurrentPage(result.pagination.currentPage || 1);
             setTotalPages(result.pagination.totalPages || 1);
+
+            if (postsData.length === 0) {
+                setStatusMessage(query || category ? "Nenhum post encontrado para este filtro." : "Não há posts disponíveis no momento.");
+            }
 
             // Buscar likes apenas se houver token e posts
             if (token && postsData.length) {
@@ -34,18 +47,25 @@ export function usePostsWithLikes(token?: string) {
                 const likesResult: any = await likeService.countByMultiplePosts(postIds, token);
                 setLikes(likesResult);
             }
-        } catch (error) {
+
+        } catch (error: any) {
+            if (error.response?.status === 404) {
+                setPosts([]); // Garante que a lista de posts está vazia
+                setStatusMessage("Nenhum post encontrado.");
+            } else {
+                setMessage('Não foi possível carregar as postagens.');
+            }
             console.error('Erro ao buscar posts:', error);
-            setMessage('Não foi possível carregar as postagens.');
         } finally {
             setLoading(false);
         }
-    }, [token]); // remove postService e likeService das dependências
+    }, [token]);
 
-    // Buscar posts ao mudar de página
+    // O useEffect agora passa todos os parâmetros de filtro para a função fetchPosts
     useEffect(() => {
-        fetchPosts(currentPage);
-    }, [currentPage, fetchPosts]);
+        fetchPosts(currentPage, 6, searchQuery, categoryQuery, sortQuery);
+    }, [currentPage, searchQuery, categoryQuery, sortQuery, fetchPosts]);
+
 
     // Atualizar likes somente quando o token mudar OU os posts mudarem
     useEffect(() => {
@@ -62,7 +82,7 @@ export function usePostsWithLikes(token?: string) {
 
         fetchLikes();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [token, posts.map(p => p.id).join(',')]); // transforma ids em string para evitar loop infinito
+    }, [token, posts.map(p => p.id).join(',')]);
 
 
     return {
@@ -70,8 +90,13 @@ export function usePostsWithLikes(token?: string) {
         likes,
         loading,
         message,
+        statusMessage,
         currentPage,
         totalPages,
+        searchQuery,
+        setSearchQuery,
+        setCategoryQuery, // <- exportando para o PostPage
+        setSortQuery, // <- exportando para o PostPage
         setCurrentPage,
         setMessage
     };

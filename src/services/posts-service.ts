@@ -16,14 +16,23 @@ export type Post = {
 
 export default class PostService {
 
-  async getAll(page: number, limit: number = 6) {
+  async getAll(page: number, limit: number = 6, query: string = '', category: string = '', sort: string = '') {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/posts`, {
-        params: { page, limit }
-      });
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/posts`,
+        {
+          params: {
+            page,
+            limit,
+            q: query || undefined, // só manda se existir
+            category: category || undefined, // Agora envia o filtro de categoria
+            sort: sort || undefined, // Agora envia o parâmetro de ordenação
+          }
+        }
+      );
       return response.data;
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao buscar posts:", error);
       throw error;
     }
   }

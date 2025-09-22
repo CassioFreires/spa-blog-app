@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 
@@ -8,27 +8,60 @@ import PostList from "../../../components/Home/PostList";
 import Pagination from "../../../components/Pagination/Pagination";
 import Loader from "../../../components/Loader/Loader";
 import EmptyState from "../../../components/EmptyStateProps/EmptyStateProps";
-import AuthRedirectMessage from "../../../components/AuthRedirect/AuthRedirect";
-
 import { usePostsWithLikes } from "../../../hooks/usePostsWithLikes";
+import PostFilters from "../../../components/PosterFilter/PosterFilter";
+
+// Função de debounce para evitar múltiplas requisições
+function debounce<F extends (...args: any[]) => void>(fn: F, delay = 500) {
+  let timer: ReturnType<typeof setTimeout>;
+  return (...args: Parameters<F>) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
 
 export default function PostPage() {
   const navigate = useNavigate();
   const { isAuthenticated, token } = useAuth();
+
+  // Estados locais para a interface de filtro
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [sortBy, setSortBy] = useState("newest");
+  const [search, setSearch] = useState("");
 
   // Hook centraliza posts + likes + paginação + loading + mensagens
   const {
     posts,
     likes,
     loading,
-    message,
     currentPage,
     totalPages,
+    setSearchQuery,
+    setCategoryQuery,
+    setSortQuery,
     setCurrentPage,
-    setMessage
+    setMessage,
+    statusMessage,
   } = usePostsWithLikes(String(token));
 
-  // Função para navegar para detalhes do post
+  // Função para aplicar os filtros no hook
+  const applyFilters = useCallback(() => {
+    setSearchQuery(search);
+    setCategoryQuery(selectedCategory);
+    setSortQuery(sortBy);
+    setCurrentPage(1); // Reseta a página para a primeira
+  }, [search, selectedCategory, sortBy, setSearchQuery, setCategoryQuery, setSortQuery, setCurrentPage]);
+
+  // Função de debounce para atualizar busca por texto automaticamente
+  const handleSearchChange = useCallback(
+    debounce((value: string) => {
+      setSearchQuery(value);
+      setCurrentPage(1);
+    }, 500),
+    [setSearchQuery, setCurrentPage]
+  );
+
   const handleReadMore = useCallback(
     (id: number) => {
       if (!isAuthenticated) {
@@ -41,7 +74,6 @@ export default function PostPage() {
     [isAuthenticated, navigate, setMessage]
   );
 
-  // Função para acessar comentários do post
   const handleCommentAccess = useCallback(
     (id: number) => {
       if (!isAuthenticated) {
@@ -56,7 +88,7 @@ export default function PostPage() {
 
   return (
     <Container>
-      <Section className="posts-page mt-5">
+      <Section className="posts-page mt-5 mb-5">
         <header className="text-center mb-5">
           <h1 className="display-5 fw-bold">Todas postagens</h1>
           <p className="lead text-secondary">
@@ -64,7 +96,22 @@ export default function PostPage() {
           </p>
         </header>
 
-        {message && <AuthRedirectMessage message={message} redirectTo="/login" />}
+       {/* Filtro */}
+        <PostFilters
+          search={search}
+          setSearch={setSearch}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          showAdvancedFilters={showAdvancedFilters}
+          setShowAdvancedFilters={setShowAdvancedFilters}
+          applyFilters={applyFilters}
+          handleSearchChange={handleSearchChange}
+        />
+
+        {/* Mensagem de status */}
+        {statusMessage && <div className="text-center text-muted my-4">{statusMessage}</div>}
 
         {loading ? (
           <Loader />
@@ -74,7 +121,7 @@ export default function PostPage() {
             likes={likes.data}
             onReadMore={handleReadMore}
             onCommentAccess={handleCommentAccess}
-            isAuthenticated={isAuthenticated} 
+            isAuthenticated={isAuthenticated}
           />
         ) : (
           <EmptyState message="Não há posts disponíveis no momento." />
