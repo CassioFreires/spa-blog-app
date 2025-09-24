@@ -29,26 +29,10 @@ export default class UserService {
         }
     }
 
-    // Função para buscar as sugestões de amizade do backend
-    async getFriendshipSuggestions(token: string) {
-        try {
-            const response = await axios.get(
-                `${import.meta.env.VITE_API_URL}/api/users/friendship-sugestion`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-            return response.data;
-        } catch (error: any) {
-            console.error('Erro ao buscar sugestões de amizade:', error);
-            throw error?.response?.data || { message: 'Erro ao buscar sugestões' };
-        }
-    }
+
 
     // Buscar usuário por ID
-    async getById(id: string | number, token:string) {
+    async getById(id: string | number, token: string) {
         try {
             const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/users/${id}`,
                 {
@@ -119,43 +103,7 @@ export default class UserService {
             throw error?.response?.data || { message: 'Erro ao buscar usuário por email' };
         }
     }
-    //Adicionar um amigo
-    async addFriend(friendId: number, token: string) {
-        try {
-            const response = await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/users/add-friends`,
-                { friendId }, // Envie o ID do amigo no corpo da requisição
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-            return response.data;
-        } catch (error: any) {
-            console.error('Erro ao adicionar amigo:', error);
-            throw error?.response?.data || { message: 'Erro ao adicionar amigo' };
-        }
-    }
-
-
-    //  Busca todos os amigos confirmados
-    async getAcceptedFriends(token: string) {
-        try {
-            const response = await axios.get(
-                `${import.meta.env.VITE_API_URL}/api/users/accepted-friends`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-            return response.data;
-        } catch (error: any) {
-            console.error('Erro ao buscar amigos confirmados:', error);
-            throw error?.response?.data || { message: 'Erro ao buscar amigos' };
-        }
-    }
+   
 
 
 }

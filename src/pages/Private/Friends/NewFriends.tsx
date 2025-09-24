@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import './Friends.css';
 import { Link } from 'react-router-dom';
-import UserService from '../../../services/users-service';
+import FriendshipService from '../../../services/friendship.service';
 import type { IUser } from '../../../services/users-service';
 
 interface Friend {
@@ -17,7 +17,7 @@ const NewFriendsPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const userService = new UserService();
+  const friendshipService = new FriendshipService()
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -31,7 +31,7 @@ const NewFriendsPage = () => {
           return;
         }
 
-        const response = await userService.getFriendshipSuggestions(token);
+        const response = await friendshipService.getFriendshipSuggestions(token);
 
         const formattedSuggestions: Friend[] = response.data.map((user: IUser) => ({
           id: user.id!,
@@ -59,7 +59,7 @@ const NewFriendsPage = () => {
         throw new Error('Usuário não autenticado.');
       }
 
-      await userService.addFriend(friendId, token);
+      await friendshipService.addFriend(friendId, token);
       
       // Remove o amigo da lista na tela após o pedido de amizade ser enviado
       setSuggestedFriends(prevFriends => prevFriends.filter(friend => friend.id !== friendId));

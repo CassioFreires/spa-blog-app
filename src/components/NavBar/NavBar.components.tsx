@@ -40,6 +40,16 @@ function NavBar() {
     user ? (
       <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
         <li className="nav-item">
+          <Link className="nav-link text-white" to="/painel/perfil/amigos/solicitacoes">
+            <i className="bi bi-person-add"></i>
+          </Link>
+        </li>
+        <li className="nav-item">
+          <Link className="nav-link text-white" to="#">
+            <i className="bi bi-bell"></i>
+          </Link>
+        </li>
+        <li className="nav-item">
           <Link className="nav-link text-white" to="/painel/perfil">Perfil</Link>
         </li>
         <li className="nav-item">
