@@ -22,7 +22,8 @@
   margin-bottom: 1rem;
 }
 
-.find-friends-link, .back-link {
+.find-friends-link,
+.back-link {
   display: inline-block;
   padding: 0.75rem 1.5rem;
   background-color: #007bff;
@@ -33,7 +34,8 @@
   transition: background-color 0.3s ease;
 }
 
-.find-friends-link:hover, .back-link:hover {
+.find-friends-link:hover,
+.back-link:hover {
   background-color: #0056b3;
 }
 
@@ -84,7 +86,8 @@
   flex-grow: 1;
 }
 
-.visit-profile-btn, .add-friend-btn {
+.visit-profile-btn,
+.add-friend-btn {
   border: none;
   border-radius: 25px;
   padding: 0.75rem 1.5rem;
@@ -96,8 +99,21 @@
 }
 
 .visit-profile-btn {
+  display: inline-block;
+  /* necessário pro <a> */
+  text-align: center;
+  border: none;
+  border-radius: 25px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
   background-color: #007bff;
   color: #fff;
+  text-decoration: none;
+  /* remove sublinhado */
 }
 
 .visit-profile-btn:hover {

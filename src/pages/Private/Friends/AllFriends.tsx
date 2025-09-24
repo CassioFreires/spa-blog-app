@@ -88,11 +88,17 @@ const AllFriendsPage = () => {
           <div className="friends-grid">
             {currentFriends.map(friend => (
               <div key={friend.id} className="friend-card">
-                {/* ✅ ATUALIZADO: Usando a propriedade `avatarUrl` */}
-                <img src={friend.avatarUrl || 'https://i.pravatar.cc/150'} alt={`Avatar de ${friend.name}`} className="friend-avatar" />
+                <img
+                  src={friend.avatarUrl || "https://i.pravatar.cc/150"}
+                  alt={`Avatar de ${friend.name}`}
+                  className="friend-avatar"
+                />
                 <h3 className="friend-name">{friend.name}</h3>
                 <p className="friend-bio">{friend.bio}</p>
-                <button className="visit-profile-btn">Ver Perfil</button>
+
+                <Link className="visit-profile-btn" to={`/painel/perfil/${friend.id}`}>
+                  Ver Perfil
+                </Link>
               </div>
             ))}
           </div>

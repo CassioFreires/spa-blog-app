@@ -58,9 +58,6 @@ export default class PostService {
     }
   }
 
-
-
-
   async create(post: Post) {
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/posts`, post);
@@ -175,4 +172,20 @@ export default class PostService {
       throw error.response?.data || error;
     }
   }
+
+  // Função que pega postagens de um usuário através do ID do usuário passado
+  async getPostsByUser(id:number, token: string) {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/posts/by-user/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      // Retorna apenas a parte de dados da resposta
+      return response.data;
+    } catch (error: any) {
+      throw error?.response?.data || { message: 'Erro ao buscar todos os posts do usuário' };
+    }
+  }
+
 }

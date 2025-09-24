@@ -48,9 +48,15 @@ export default class UserService {
     }
 
     // Buscar usuário por ID
-    async getById(id: string | number) {
+    async getById(id: string | number, token:string) {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/users/${id}`);
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/users/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
             return response.data;
         } catch (error: any) {
             console.error('Erro ao buscar usuário por ID:', error);

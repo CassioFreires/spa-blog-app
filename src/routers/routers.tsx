@@ -20,6 +20,7 @@ import CreateMyPostPage from '../pages/Private/CreateMyPostPage/CreateMyPost';
 import EditeMyPostPage from '../pages/Private/EditeMyPost/EditeMyPost';
 import AllFriendsPage from '../pages/Private/Friends/AllFriends';
 import NewFriendsPage from '../pages/Private/Friends/NewFriends';
+import FriendProfilePage from '../pages/Private/FriendProfile/FriendProfile';
 
 export const router = createBrowserRouter([
     {
@@ -73,11 +74,16 @@ export const router = createBrowserRouter([
                     },
                     {
                         path: 'perfil/amigos',
-                         element: <ProtectedRoute allowedRoles={['admin', 'editor', 'author', 'user']} />,
+                        element: <ProtectedRoute allowedRoles={['admin', 'editor', 'author', 'user']} />,
                         children: [
                             { index: true, element: <AllFriendsPage /> }, // Rota padrão para ver todos os amigos
                             { path: 'sugestoes', element: <NewFriendsPage /> }, // Rota para ver novas sugestões
                         ]
+                    },
+                    {
+                        path: 'perfil/:id',
+                        element: <ProtectedRoute allowedRoles={['admin', 'editor', 'author', 'user']} />,
+                        children: [{ index: true, element: <FriendProfilePage />}]
                     },
                     {
                         path: '*', element: <NotFoundPage />
