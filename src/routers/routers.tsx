@@ -21,6 +21,7 @@ import EditeMyPostPage from '../pages/Private/EditeMyPost/EditeMyPost';
 import AllFriendsPage from '../pages/Private/Friends/AllFriends';
 import NewFriendsPage from '../pages/Private/Friends/NewFriends';
 import FriendProfilePage from '../pages/Private/FriendProfile/FriendProfile';
+import FriendRequestsPage from '../pages/Private/FriendRequest/FriendRequest';
 
 export const router = createBrowserRouter([
     {
@@ -78,6 +79,7 @@ export const router = createBrowserRouter([
                         children: [
                             { index: true, element: <AllFriendsPage /> }, // Rota padrão para ver todos os amigos
                             { path: 'sugestoes', element: <NewFriendsPage /> }, // Rota para ver novas sugestões
+                            { path: 'solicitacoes', element: <FriendRequestsPage /> }, // Rota para ver novas sugestões
                         ]
                     },
                     {

@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import './Friends.css';
 import { Link } from 'react-router-dom';
-import UserService from '../../../services/users-service';
 import type { IUser } from '../../../services/users-service';
+import FriendshipService from '../../../services/friendship.service';
 
 // Defina a interface para o amigo, baseada na interface do usuário
 interface Friend {
@@ -21,7 +21,7 @@ const AllFriendsPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const userService = new UserService();
+  const friendshipService = new FriendshipService();
 
   useEffect(() => {
     const fetchFriends = async () => {
@@ -35,7 +35,7 @@ const AllFriendsPage = () => {
         }
 
         // ✅ FAZ A CHAMADA PARA A FUNÇÃO REAL DO SERVIÇO
-        const response = await userService.getAcceptedFriends(token);
+        const response = await friendshipService.getAcceptedFriends(token);
 
         // Mapeia a resposta da API para o seu tipo Friend
         const formattedFriends: Friend[] = response.data.map((user: IUser) => ({

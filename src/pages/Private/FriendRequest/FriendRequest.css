@@ -1,0 +1,183 @@
+/* Paleta de Cores */
+:root {
+    --primary-color: #337ab7;   /* Azul escuro profissional */
+    --accent-color: #28a745;    /* Verde para aceitar */
+    --danger-color: #dc3545;    /* Vermelho para rejeitar */
+    --text-dark: #333;          /* Texto principal */
+    --text-light: #555;         /* Texto secundário */
+    --bg-light: #f8f9fa;        /* Fundo claro */
+    --card-bg: #ffffff;         /* Fundo dos cartões */
+    --border-color: #e9ecef;    /* Borda e divisórias */
+}
+
+/* Container principal da página */
+.professional-page-container {
+    width: 100%;
+    max-width: 960px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: var(--bg-light);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Estilos do cabeçalho */
+.professional-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.professional-title {
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 2.5em;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+}
+
+.professional-subtitle {
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 1.1em;
+    color: var(--text-light);
+}
+
+.professional-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.professional-link:hover {
+    color: #2a6496;
+    text-decoration: underline;
+}
+
+/* Layout dos cartões de amizade */
+.professional-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+/* Estilo do cartão individual */
+.professional-card {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.professional-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.professional-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    border: 3px solid var(--primary-color);
+}
+
+.professional-name {
+    font-size: 1.4em;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+}
+
+.professional-bio {
+    font-size: 0.9em;
+    color: var(--text-light);
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+/* Ações e botões */
+.professional-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.professional-btn-accept,
+.professional-btn-reject {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-transform: uppercase;
+}
+
+.professional-btn-accept {
+    background-color: var(--accent-color);
+    color: #fff;
+}
+
+.professional-btn-accept:hover {
+    background-color: #218838;
+}
+
+.professional-btn-reject {
+    background-color: var(--danger-color);
+    color: #fff;
+}
+
+.professional-btn-reject:hover {
+    background-color: #c82333;
+}
+
+/* Estado de lista vazia */
+.professional-empty-state-container {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.professional-empty-state-icon {
+    font-size: 3.5em;
+    color: var(--text-light);
+}
+
+.professional-empty-state-text {
+    font-size: 1.2em;
+    color: var(--text-light);
+    line-height: 1.5;
+}
+
+.professional-empty-state-link {
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.professional-empty-state-link:hover {
+    background-color: #2a6496;
+}
