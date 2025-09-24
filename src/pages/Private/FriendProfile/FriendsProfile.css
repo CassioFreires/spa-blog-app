@@ -1,0 +1,169 @@
+/* Raiz para FriendProfile */
+.friend-profile-page {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: 'Roboto', sans-serif;
+  color: #333;
+}
+
+/* ===============================
+   HEADER DO PERFIL DO AMIGO
+=============================== */
+.friend-profile-page .profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  border-radius: 15px;
+  padding: 2rem 1rem;
+  margin-bottom: 2rem;
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.friend-profile-page .profile-avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 5px solid #fff;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  transition: transform 0.3s;
+}
+
+.friend-profile-page .profile-avatar:hover {
+  transform: scale(1.05);
+}
+
+.friend-profile-page .profile-info h1.profile-name {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.friend-profile-page .profile-info p.profile-bio {
+  font-size: 1rem;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+}
+
+.friend-profile-page .profile-info p.profile-date {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ===============================
+   BOTÕES FUTUROS (seguir, mensagem, favoritos)
+=============================== */
+.friend-profile-page .profile-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.friend-profile-page .profile-actions button {
+  background-color: #fff;
+  color: #2575fc;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 25px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.friend-profile-page .profile-actions button:hover {
+  background-color: #e6e6e6;
+  transform: translateY(-2px);
+}
+
+/* ===============================
+   POSTS
+=============================== */
+.friend-profile-page .profile-posts {
+  margin-top: 2rem;
+}
+
+.friend-profile-page .profile-posts h2.section-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  border-left: 5px solid #2575fc;
+  padding-left: 0.5rem;
+}
+
+.friend-profile-page .posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.friend-profile-page .post-card {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.friend-profile-page .post-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.friend-profile-page .post-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #2575fc;
+}
+
+.friend-profile-page .post-link {
+  margin-top: auto;
+  text-decoration: none;
+  font-weight: 500;
+  color: #6a11cb;
+  transition: color 0.3s;
+}
+
+.friend-profile-page .post-link:hover {
+  color: #2575fc;
+}
+
+/* ===============================
+   ESTADO SEM POSTS
+=============================== */
+.friend-profile-page .profile-posts p {
+  text-align: center;
+  font-size: 1rem;
+  color: #888;
+  padding: 2rem 1rem;
+  border: 1px dashed #ccc;
+  border-radius: 12px;
+  background-color: #fafafa;
+}
+
+/* ===============================
+   RESPONSIVIDADE
+=============================== */
+@media (min-width: 768px) {
+  .friend-profile-page .profile-header {
+    flex-direction: row;
+    text-align: left;
+    padding: 2rem 3rem;
+  }
+
+  .friend-profile-page .profile-info {
+    margin-left: 2rem;
+  }
+
+  .friend-profile-page .profile-actions {
+    justify-content: flex-start;
+  }
+}
