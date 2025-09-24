@@ -17,17 +17,22 @@ function NavBar() {
         <Link className="nav-link text-white" to="/categorias">Categorias</Link>
       </li>
       <li className="nav-item">
-        <Link className="nav-link text-white" to="/servicos">Serviços</Link>
-      </li>
-       <li className="nav-item">
         <Link className="nav-link text-white" to="/#">Comunidades</Link>
       </li>
-      <li className="nav-item">
-        <Link className="nav-link text-white" to="/sobre">Sobre</Link>
-      </li>
-      <li className="nav-item">
-        <Link className="nav-link text-white" to="/contato">Contato</Link>
-      </li>
+
+      {!user && (
+        <>
+          <li className="nav-item">
+            <Link className="nav-link text-white" to="/servicos">Serviços</Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link text-white" to="/sobre">Sobre</Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link text-white" to="/contato">Contato</Link>
+          </li>
+        </>
+      )}
     </ul>
   );
 
