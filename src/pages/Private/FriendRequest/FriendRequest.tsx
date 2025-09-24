@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import FriendshipService from '../../../services/friendship.service';
-import './FriendRequest.css'
+import './FriendRequest.css';
+import UserService from '../../../services/users-service'; // Importar UserService para a interface IUser
 
 // Defina a interface para o pedido de amizade
 interface FriendshipRequest {

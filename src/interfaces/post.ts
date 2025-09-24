@@ -5,7 +5,7 @@ export type IPost = {
   content: string;
   categoryId: number;
   user_id: number;
-  image?: string;
+  image_url?: string;
   user_name?: string;
   last_name?:string;
   authorId?: string;
