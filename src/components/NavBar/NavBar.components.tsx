@@ -19,6 +19,9 @@ function NavBar() {
       <li className="nav-item">
         <Link className="nav-link text-white" to="/servicos">Serviços</Link>
       </li>
+       <li className="nav-item">
+        <Link className="nav-link text-white" to="/#">Comunidades</Link>
+      </li>
       <li className="nav-item">
         <Link className="nav-link text-white" to="/sobre">Sobre</Link>
       </li>

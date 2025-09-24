@@ -8,6 +8,12 @@ export type IUser = {
     role?: string;
     createdAt?: string;
     updatedAt?: string;
+    // Adicione os campos que você vai usar do backend
+    lastName?: string;
+    bio?: string;
+    avatarUrl?: string | null;
+    role_name?: string;
+    role_description?: string;
 };
 
 export default class UserService {
@@ -20,6 +26,24 @@ export default class UserService {
         } catch (error: any) {
             console.error('Erro ao buscar usuários:', error);
             throw error?.response?.data || { message: 'Erro ao buscar usuários' };
+        }
+    }
+
+    // Função para buscar as sugestões de amizade do backend
+    async getFriendshipSuggestions(token: string) {
+        try {
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_URL}/api/users/friendship-sugestion`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            return response.data;
+        } catch (error: any) {
+            console.error('Erro ao buscar sugestões de amizade:', error);
+            throw error?.response?.data || { message: 'Erro ao buscar sugestões' };
         }
     }
 
@@ -46,7 +70,7 @@ export default class UserService {
     }
 
     // Atualizar usuário
-    async update(id: string | number,user: Partial<IUser> | FormData, token: string) {
+    async update(id: string | number, user: Partial<IUser> | FormData, token: string) {
         try {
             const isFormData = user instanceof FormData;
 
@@ -89,4 +113,44 @@ export default class UserService {
             throw error?.response?.data || { message: 'Erro ao buscar usuário por email' };
         }
     }
+    //Adicionar um amigo
+    async addFriend(friendId: number, token: string) {
+        try {
+            const response = await axios.post(
+                `${import.meta.env.VITE_API_URL}/api/users/add-friends`,
+                { friendId }, // Envie o ID do amigo no corpo da requisição
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            return response.data;
+        } catch (error: any) {
+            console.error('Erro ao adicionar amigo:', error);
+            throw error?.response?.data || { message: 'Erro ao adicionar amigo' };
+        }
+    }
+
+
+    //  Busca todos os amigos confirmados
+    async getAcceptedFriends(token: string) {
+        try {
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_URL}/api/users/accepted-friends`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            return response.data;
+        } catch (error: any) {
+            console.error('Erro ao buscar amigos confirmados:', error);
+            throw error?.response?.data || { message: 'Erro ao buscar amigos' };
+        }
+    }
+
+
 }
+

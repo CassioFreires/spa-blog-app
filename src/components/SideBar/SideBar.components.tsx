@@ -21,6 +21,9 @@ function Sidebar() {
         <li className="nav-item">
           <Link to="/painel/perfil/minhas-postagens" className="nav-link text-white">Minhas postagens</Link>
         </li>
+        <li className="nav-item">
+          <Link to="/painel/perfil/amigos" className="nav-link text-white">Amigos</Link>
+        </li>
         <li className="nav-item mt-3">
           <Link to="/" className="btn btn-sm btn-outline-light">Sair</Link>
         </li>
