@@ -169,3 +169,44 @@
 .pagination-btn:hover:not(.active) {
   background-color: #f0f0f0;
 }
+
+.friends-filter-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.friends-filter-header input[type="text"],
+.friends-filter-select {
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  min-width: 250px;
+}
+
+.friends-filter-header input[type="text"]:focus,
+.friends-filter-select:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+}
+
+.friends-filter-select {
+  background-color: white;
+  appearance: none;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .friends-filter-header input,
+  .friends-filter-select {
+    width: 100%;
+    min-width: unset;
+  }
+}
