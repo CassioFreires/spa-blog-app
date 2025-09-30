@@ -1,119 +1,262 @@
-// src/pages/Private/Friends/AllFriendsPage.tsx
 import React, { useState, useEffect } from 'react';
 import './Friends.css';
 import { Link } from 'react-router-dom';
 import type { IUser } from '../../../services/users-service';
 import FriendshipService from '../../../services/friendship.service';
+import UserService from '../../../services/users-service';
 
-// Defina a interface para o amigo, baseada na interface do usuário
 interface Friend {
   id: number;
   name: string;
-  avatarUrl: string; // Nota: A propriedade no backend é avatarUrl
+  avatarUrl: string;
   bio: string;
 }
 
 const ITEMS_PER_PAGE = 12;
 
 const AllFriendsPage = () => {
-  const [friends, setFriends] = useState<Friend[]>([]); // Tipo corrigido para Friend[]
+  const [friends, setFriends] = useState<Friend[]>([]);
+  const [suggestions, setSuggestions] = useState<Friend[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [inputFilter, setInputFilter] = useState('');
+  const [filterType, setFilterType] = useState('Todos');
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [filteredResults, setFilteredResults] = useState<Friend[]>([]);
+  const [pendingRequests, setPendingRequests] = useState<number[]>([]);
+
 
   const friendshipService = new FriendshipService();
+  const usersService = new UserService();
 
   useEffect(() => {
-    const fetchFriends = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         const token = localStorage.getItem('token');
-        if (!token) {
-          setError('Você precisa estar logado para ver seus amigos.');
+        const userJson = localStorage.getItem('user');
+        const currentUser = userJson ? JSON.parse(userJson) : null;
+        const currentId = currentUser?.id;
+
+        if (!token || !currentId) {
+          setError('Você precisa estar logado.');
           setLoading(false);
           return;
         }
 
-        // ✅ FAZ A CHAMADA PARA A FUNÇÃO REAL DO SERVIÇO
-        const response = await friendshipService.getAcceptedFriends(token);
+        setCurrentUserId(currentId);
 
-        // Mapeia a resposta da API para o seu tipo Friend
-        const formattedFriends: Friend[] = response.data.map((user: IUser) => ({
+        const [friendsRes, allUsersRes] = await Promise.all([
+          friendshipService.getAcceptedFriends(token),
+          usersService.getAll(),
+        ]);
+
+        console.log(friendsRes)
+
+        const allUsers: Friend[] = allUsersRes.data.map((user: IUser) => ({
           id: user.id!,
           name: user.name,
           avatarUrl: user.avatarUrl || 'https://i.pravatar.cc/150',
           bio: user.bio || 'Sem biografia',
         }));
 
-        setFriends(formattedFriends);
+        const friendsList: Friend[] = friendsRes.data.map((user: IUser) => ({
+          id: user.id!,
+          name: user.name,
+          avatarUrl: user.avatarUrl || 'https://i.pravatar.cc/150',
+          bio: user.bio || 'Sem biografia',
+        }));
+
+        const suggestionsList = allUsers.filter(
+          user =>
+            user.id !== currentId &&
+            !friendsList.some(friend => friend.id === user.id)
+        );
+
+        setFriends(friendsList);
+        setSuggestions(suggestionsList);
+        setFilteredResults([]);
+        setError(null);
       } catch (err: any) {
-        setError(err.message || 'Não foi possível carregar a lista de amigos.');
+        setError(err.message || 'Erro ao carregar dados.');
       } finally {
         setLoading(false);
       }
     };
-    fetchFriends();
-  }, []); // A chamada à API é feita apenas uma vez ao carregar o componente
 
-  // A lógica de paginação continua a mesma, mas agora usa os dados reais do estado `friends`
+    fetchData();
+  }, []);
+
+  const handleAddFriend = async (friendId: number) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Usuário não autenticado.');
+      }
+
+      await friendshipService.addFriend(friendId, token);
+
+      // Atualiza a lista de sugestões
+      setSuggestions(prev => prev.filter(user => user.id !== friendId));
+      setFilteredResults(prev => prev.filter(user => user.id !== friendId));
+
+      // Armazena no estado que a solicitação foi enviada
+      setPendingRequests(prev => [...prev, friendId]);
+    } catch (err: any) {
+      setError(err.message || 'Erro ao adicionar amigo.');
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputFilter(value);
+
+    if (value.trim() === '') {
+      setFilteredResults([]);
+      setError(null);
+      return;
+    }
+
+    let sourceList: Friend[] = [];
+
+    switch (filterType) {
+      case 'Amigos':
+        sourceList = friends;
+        break;
+      case 'Sugestoes':
+        sourceList = suggestions;
+        break;
+      default:
+        sourceList = [...friends, ...suggestions];
+        break;
+    }
+
+    const matches = sourceList.filter(user =>
+      user.name.toLowerCase().includes(value.toLowerCase())
+    );
+
+    if (matches.length === 0) {
+      setError('Nenhum usuário encontrado.');
+    } else {
+      setError(null);
+    }
+
+    setFilteredResults(matches);
+  };
+
   const totalPages = Math.ceil(friends.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentFriends = friends.slice(startIndex, endIndex);
+  const currentFriends = friends.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  const usersToRender =
+    inputFilter.length > 0
+      ? filteredResults
+      : filterType === 'Sugestoes'
+        ? suggestions
+        : currentFriends;
 
   if (loading) {
-    return <div className="loading-state">Carregando todos os amigos...</div>;
-  }
-
-  if (error) {
-    return <div className="error-state">{error}</div>;
+    return <div className="loading-state">Carregando...</div>;
   }
 
   return (
     <div className="friends-page-container">
+      {/* Filtros */}
+      <div className="friends-filter-header mb-5">
+        <input
+          type="text"
+          placeholder="Digite o nome do usuário"
+          value={inputFilter}
+          onChange={handleInputChange}
+        />
+        <select
+          className="friends-filter-select"
+          value={filterType}
+          onChange={(e) => {
+            setFilterType(e.target.value);
+            setInputFilter('');
+            setFilteredResults([]);
+            setError(null);
+          }}
+        >
+          <option disabled value="Escolha">Escolha o filtro</option>
+          <option value="Todos">Todos</option>
+          <option value="Amigos">Amigos</option>
+          <option value="Sugestoes">Sugestões</option>
+        </select>
+      </div>
+
+      {/* Cabeçalho */}
       <div className="friends-header">
         <h1 className="friends-title">Todos os seus amigos</h1>
-        <p className="friends-subtitle">Gerencie e explore sua lista completa de conexões.</p>
+        <p className="friends-subtitle">Gerencie e explore sua lista de conexões.</p>
         <Link to="/painel/perfil/amigos/sugestoes" className="find-friends-link">
           Encontrar novos amigos
         </Link>
       </div>
 
-      {currentFriends.length === 0 ? (
+      {/* Erro de busca */}
+      {error && inputFilter.length > 0 && (
+        <div className="error-state">
+          <p>{error}</p>
+        </div>
+      )}
+
+      {/* Lista */}
+      {usersToRender.length === 0 && !error ? (
         <div className="no-friends">
-          <p>Você ainda não tem amigos adicionados.</p>
+          <p>Nenhum usuário para mostrar.</p>
         </div>
       ) : (
         <>
           <div className="friends-grid">
-            {currentFriends.map(friend => (
-              <div key={friend.id} className="friend-card">
+            {usersToRender.map(user => (
+              <div key={user.id} className="friend-card">
                 <img
-                  src={friend.avatarUrl || "https://i.pravatar.cc/150"}
-                  alt={`Avatar de ${friend.name}`}
+                  src={user.avatarUrl}
+                  alt={`Avatar de ${user.name}`}
                   className="friend-avatar"
                 />
-                <h3 className="friend-name">{friend.name}</h3>
-                <p className="friend-bio">{friend.bio}</p>
+                <h3 className="friend-name">{user.name}</h3>
+                <p className="friend-bio">{user.bio}</p>
 
-                <Link className="visit-profile-btn" to={`/painel/perfil/${friend.id}`}>
-                  Ver Perfil
-                </Link>
+                {friends.some(f => f.id === user.id) ? (
+                  <Link className="visit-profile-btn" to={`/painel/perfil/${user.id}`}>
+                    Ver Perfil
+                  </Link>
+                ) : pendingRequests.includes(user.id) ? (
+                  <button className="request-sent-btn" disabled>
+                    Solicitação enviada
+                  </button>
+                ) : (
+                  <button
+                    className="add-friend-btn"
+                    onClick={() => handleAddFriend(user.id)}
+                  >
+                    Adicionar
+                  </button>
+                )}
               </div>
             ))}
           </div>
 
-          <div className="pagination">
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i + 1}
-                onClick={() => setCurrentPage(i + 1)}
-                className={`pagination-btn ${currentPage === i + 1 ? 'active' : ''}`}
-              >
-                {i + 1}
-              </button>
-            ))}
-          </div>
+          {/* Paginação (apenas quando não filtrando nem vendo sugestões) */}
+          {inputFilter.length === 0 && filterType !== 'Sugestoes' && (
+            <div className="pagination">
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i + 1}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`pagination-btn ${currentPage === i + 1 ? 'active' : ''}`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+          )}
         </>
       )}
     </div>
