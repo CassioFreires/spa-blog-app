@@ -14,16 +14,17 @@ export default function PostList({ posts, likes, onReadMore, onCommentAccess, is
         return <p className="text-center text-muted my-5">Ainda não há posts por aqui. Volte em breve!</p>;
     }
 
-    return (
-        <div className="row g-4">
+   return (
+        <div className="row justify-content-center g-5"> {/* Aumentamos o g-4 para g-5 para mais espaçamento vertical */}
             {posts.map(post => (
-                <div key={post.id} className='col-md-6 col-lg-4'>
+                // 🔑 MUDANÇA CRUCIAL: col-12 força 100% da largura em todas as telas
+                <div key={post.id} className='col-12'> 
                     <PostCard
                         post={post}
                         onReadMore={onReadMore}
                         onCommentAccess={onCommentAccess}
                         initialLikes={likes?.[post.id] ?? 0}
-                        isAuthenticated={isAuthenticated} // 👈 Passa para o PostCard
+                        isAuthenticated={isAuthenticated}
                     />
                 </div>
             ))}

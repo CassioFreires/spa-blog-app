@@ -1,4 +1,3 @@
-// components/ui/Card.tsx
 import type { ReactNode } from 'react';
 
 type CardProps = {
@@ -7,8 +6,9 @@ type CardProps = {
 };
 
 export default function Card({ children, className = '' }: CardProps) {
+  // Removendo 'shadow-sm' para um visual mais flat como o Facebook
   return (
-    <div className={`card shadow-sm h-100 border-0 ${className}`}>
+    <div className={`card h-100 ${className}`}>
       {children}
     </div>
   );

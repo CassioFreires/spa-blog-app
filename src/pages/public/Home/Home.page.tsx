@@ -8,12 +8,14 @@ import CallToAction from '../../../components/Home/CallToAction';
 import { usePosts } from '../../../hooks/usePost';
 import { useAuthRedirect } from '../../../hooks/authRedirect';
 import Loader from '../../../components/Loader/Loader';
+import RetroCallToAction from '../../../components/Home/RetroCallToAction';
 import './Home.css';
 
 function HomePage() {
     const { posts, loading, error, likes } = usePosts();
     const { isAuthenticated, message, redirect } = useAuthRedirect();
 
+    // As funções de callback de redirecionamento permanecem as mesmas, garantindo a segurança.
     const handleReadMore = useCallback(
         (id: number) => {
             if (!isAuthenticated) {
@@ -50,13 +52,25 @@ function HomePage() {
                 {loading && <Loader />}
                 {error && <Alert type="danger">{error}</Alert>}
 
-                <PostList
-                    posts={posts}
-                    onReadMore={handleReadMore}
-                    onCommentAccess={handleCommentAccess}
-                    likes={likes}
-                    isAuthenticated={isAuthenticated} // 👈 Passa o estado de autenticação
-                />
+                ---
+                
+                {/* 🔑 Lógica Principal: Exibir posts ou CTA Retrô */}
+                {isAuthenticated ? (
+                    // 1. USUÁRIO AUTENTICADO: Exibe a lista de posts completa
+                    <PostList
+                        posts={posts}
+                        onReadMore={handleReadMore}
+                        onCommentAccess={handleCommentAccess}
+                        likes={likes}
+                        isAuthenticated={isAuthenticated}
+                    />
+                ) : (
+                    // 2. USUÁRIO NÃO AUTENTICADO: Oculta a lista de posts e exibe o CTA Retrô
+                    <RetroCallToAction />
+                )}
+
+                ---
+
                 <ServicesSection />
                 <CallToAction />
             </section>

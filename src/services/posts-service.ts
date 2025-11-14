@@ -14,6 +14,17 @@ export type Post = {
   updatedAt?: string;
 };
 
+type CreatePostDtoFront = {
+  postType: 'standard' | 'poll';
+  title: string;
+  subtitle?: string;
+  content?: string;
+  category_id?: number;
+  user_id: number;
+  options?: string[];
+  image_url?: File | string; // File para envio via FormData
+};
+
 export default class PostService {
 
   async getAll(page: number, limit: number = 6, query: string = '', category: string = '', sort: string = '') {

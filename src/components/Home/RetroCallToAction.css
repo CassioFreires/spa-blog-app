@@ -1,0 +1,36 @@
+/* components/Home/RetroCallToAction.css */
+
+.retro-cta {
+    /* Estilo de caixa de diálogo de blog ou fórum antigo */
+    border: 3px solid #333; /* Borda grossa e escura */
+    background-color: #f7f7f7; /* Fundo levemente cinza/amarelado */
+    box-shadow: 4px 4px 0 #999; /* Sombra "pixelizada" ou deslocada */
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: 'Courier New', Courier, monospace; /* Fonte monoespaçada para toque retrô */
+}
+
+.retro-title {
+    color: #cc0000; /* Vermelho de alerta ou destaque */
+    font-weight: bold;
+    border-bottom: 2px dashed #999;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.retro-text {
+    line-height: 1.6;
+}
+
+.retro-button {
+    text-transform: uppercase;
+    font-weight: bold;
+    border-radius: 0; /* Bordas quadradas */
+    border-width: 2px;
+}
+
+.btn-outline-dark.retro-button {
+    color: #333;
+    border-color: #333;
+}
