@@ -1,0 +1,79 @@
+/* components/PosterFilter/PostFilters.css */
+
+.filters-container {
+    max-width: 900px; /* Limitar a largura para melhor leitura */
+    margin: 0 auto;
+}
+
+/* Estilo da Barra de Busca (Clássico Facebook/Instagram) */
+.search-bar-wrapper {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 50px;
+    overflow: hidden;
+}
+
+.search-icon {
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-right: none;
+    color: #a0a0a0;
+    padding-left: 1.25rem;
+    padding-right: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.filter-search-input {
+    border: 1px solid #e0e0e0;
+    border-left: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.filter-search-input:focus {
+    border-color: #4a6fa5;
+    box-shadow: 0 0 0 0.1rem rgba(74, 111, 165, 0.25);
+}
+
+/* Estilo dos Chips/Botões (Vibrante e Tátil) */
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-label {
+    font-weight: 600;
+    color: #4a6fa5;
+    white-space: nowrap;
+}
+
+.filter-chip {
+    background-color: #f0f4f8;
+    color: #4a6fa5;
+    border: 1px solid #d3e0f0;
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.filter-chip:hover {
+    background-color: #e6eef5;
+    border-color: #4a6fa5;
+}
+
+.filter-chip.active {
+    background: linear-gradient(45deg, #4a6fa5 0%, #254d7e 100%);
+    color: white;
+    border-color: #254d7e;
+    box-shadow: 0 4px 8px rgba(74, 111, 165, 0.3);
+}
+
+/* Select Estilizado */
+.filter-select {
+    border-radius: 8px;
+    border: 1px solid #d3e0f0;
+    padding: 8px 15px;
+    background-color: #f7f9fc;
+}

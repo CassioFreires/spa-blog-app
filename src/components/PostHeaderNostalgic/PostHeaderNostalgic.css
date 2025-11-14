@@ -1,0 +1,49 @@
+/* PostHeaderNostalgic.css (VISUAL FACEBOOK CLÁSSICO) */
+
+.post-header-nostalgic {
+    /* Fundo branco puro, sem gradiente */
+    background: #ffffff;
+    border-bottom: none; 
+    padding: 15px 25px; 
+    display: flex;
+    align-items: center;
+}
+
+.profile-avatar {
+    width: 40px; /* Tamanho clássico do avatar do feed */
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    /* Borda simples para integrar ao layout */
+    border: none; 
+    box-shadow: none; 
+}
+
+.author-name {
+    font-weight: 700;
+    color: #1c1e21; /* Cor de texto padrão */
+    font-size: 0.95rem; 
+    cursor: pointer;
+    /* Sem margem na parte de baixo, pois o texto da data vem logo abaixo */
+    margin-bottom: 0; 
+}
+
+.post-details {
+    display: flex;
+    gap: 8px; /* Menos espaçamento */
+    align-items: center;
+    color: #606770; /* Cinza suave (para data) */
+    font-size: 0.8rem;
+    margin-top: 2px;
+}
+
+.category-tag {
+    font-weight: 500;
+    /* Remove background para integrar melhor ao texto de data */
+    background-color: transparent; 
+    padding: 0;
+    border-radius: 0; 
+    color: #606770;
+    font-size: 0.8rem;
+    box-shadow: none; 
+}

@@ -6,6 +6,8 @@ import type { IUser } from "../../../interfaces/user";
 import type { IPost } from "../../../interfaces/post";
 import './FriendsProfile.css';
 import { formatDateBR } from "../../../utils/date";
+// Se você for usar o PostCard que criamos, você precisará importá-lo aqui.
+// import PostCard from "../../../components/PostCard/PostCard"; 
 
 const FriendProfilePage = () => {
     const { id } = useParams<{ id: string }>();
@@ -33,9 +35,20 @@ const FriendProfilePage = () => {
 
                 // buscar postagens do usuário
                 const postsResponse = await postService.getPostsByUser(Number(id), token);
-                setPosts(postsResponse.data);
+                
+                // 🔑 CORREÇÃO AQUI: Garante que posts é um array antes de atualizar o estado
+                // Se postsResponse.data não for um array, usa um array vazio [] como fallback.
+                if (Array.isArray(postsResponse.data)) {
+                    setPosts(postsResponse.data);
+                } else {
+                    // Isso lida com o caso em que a API retorna {} ou null quando não há posts.
+                    console.warn("API returned non-array data for posts:", postsResponse.data);
+                    setPosts([]); 
+                }
+                
             } catch (err: any) {
-                setError(err.message || "Erro ao carregar perfil.");
+                // Se a requisição falhar (ex: 404), o erro será capturado aqui.
+                setError(err.message || "Erro ao carregar perfil ou publicações.");
             } finally {
                 setLoading(false);
             }
@@ -43,6 +56,7 @@ const FriendProfilePage = () => {
 
         fetchProfile();
     }, [id]);
+
 
     if (loading) return <div className="loading-state">Carregando perfil...</div>;
     if (error) return <div className="error-state">{error}</div>;
@@ -73,11 +87,12 @@ const FriendProfilePage = () => {
 
             <div className="profile-posts">
                 <h2 className="section-title">Publicações de {user.name}</h2>
-                {posts.length === 0 ? (
-                    <p>Este usuário ainda não publicou nada.</p>
-                ) : (
+                {/* 🔑 CAMADA EXTRA DE SEGURANÇA NO JSX: embora o useState garanta array, é bom manter */}
+                {Array.isArray(posts) && posts.length > 0 ? (
                     <div className="posts-grid">
                         {posts.map((post) => (
+                            // Se você deseja usar o PostCard completo, substitua este div:
+                            // <PostCard key={post.id} post={post} isAuthenticated={true} onReadMore={()=>{}} onCommentAccess={()=>{}} />
                             <div key={post.id} className="post-card">
                                 <h3 className="post-title">{post.title}</h3>
                                 <a href={`/postagens/${post.id}`} className="post-link">
@@ -86,11 +101,12 @@ const FriendProfilePage = () => {
                             </div>
                         ))}
                     </div>
+                ) : (
+                    <p>Este usuário ainda não publicou nada.</p>
                 )}
             </div>
         </div>
     );
-
 };
 
 export default FriendProfilePage;

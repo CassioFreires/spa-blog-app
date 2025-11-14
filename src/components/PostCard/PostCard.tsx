@@ -1,11 +1,25 @@
+// components/PostCard/PostCard.tsx
 import { useCallback } from 'react';
 import Card from '../Card/Card';
-import Button from '../Button/Button';
 import PostCommented from '../PostCommented/PostCommented';
+import PostHeaderNostalgic from '../PostHeaderNostalgic/PostHeaderNostalgic';
 import type { Post } from '../../interfaces/post-interface';
 import { truncate } from '../../utils/text';
 import { formatDateBR } from '../../utils/date';
 import './PostCard.css';
+
+// PaywallPlaceholder (para referência)
+function PaywallPlaceholder() {
+    return (
+        <div className="paywall-placeholder text-center mt-3 p-3">
+            <i className="bi bi-lock-fill text-primary" style={{ fontSize: '1.5rem' }}></i>
+            <p className="fw-semibold mb-1 mt-2">Acesso exclusivo para membros.</p>
+            <p className="text-secondary small mb-0">
+                <a href="/login" className="fw-bold">Faça Login</a> ou <a href="/registro">Registre-se</a> para ver o conteúdo e interagir.
+            </p>
+        </div>
+    );
+}
 
 type PostCardProps = {
   post: Post;
@@ -15,16 +29,6 @@ type PostCardProps = {
   isAuthenticated: boolean;
 };
 
-// Componente para o overlay que aparece para usuários não autenticados
-const AuthOverlay = () => (
-  <div className="auth-overlay">
-    <div className="auth-overlay-content">
-      <h5>Conteúdo exclusivo para membros</h5>
-      <p>Faça login para ler o post completo e participar da discussão.</p>
-      <a href="/login" className="btn btn-warning">Entrar agora</a>
-    </div>
-  </div>
-);
 
 export default function PostCard({
   post,
@@ -34,9 +38,11 @@ export default function PostCard({
   isAuthenticated,
 }: PostCardProps) {
   const author = post.user_name || post.author || 'Autor desconhecido';
-  const categoryDesc = post.category_description ? truncate(post.category_description, 60) : '';
+  const categoryDesc = post.category_description || 'Geral';
+  
+  const formattedDate = formatDateBR(post.createAt); 
 
-  const handleReadMoreClick = useCallback(() => {
+  const handleCardClick = useCallback(() => {
     if (isAuthenticated) {
       onReadMore(post.id);
     }
@@ -50,47 +56,61 @@ export default function PostCard({
 
   return (
     <article className='post-card-container'>
-      <Card>
-        <img
-          src={`http://localhost:3000${post.image_url}`}
-          className="card-img-top"
-          alt={post.title}
-          loading="lazy"
+      <Card className="nostalgic-card">
+        
+        {/* 1. HEADER NOSTÁLGICO */}
+        <PostHeaderNostalgic 
+          author={author} 
+          createAt={formattedDate} 
+          category={categoryDesc}
         />
+        
+        {/* 2. CORPO CLICÁVEL (para Ler Mais) */}
+        <div 
+          className="post-content-area card-body d-flex flex-column p-0"
+          onClick={isAuthenticated ? handleCardClick : undefined}
+          style={{ cursor: isAuthenticated ? 'pointer' : 'default' }}
+        >
+            
+          {/* Imagem em destaque */}
+          <div className="post-image-wrapper">
+            <img
+              src={`http://localhost:3000${post.image_url}`}
+              className="post-img"
+              alt={post.title}
+              loading="lazy"
+            />
+          </div>
 
-        <div className={`card-body d-flex flex-column ${!isAuthenticated ? 'blurred' : ''}`}>
-          <h5 className="card-title">{post.title}</h5>
-
-          <p className="text-muted small mb-2 d-flex align-items-center gap-2 mt-3 mb-3">
-            <i className="bi bi-person-circle"></i> {author}
-            <span>•</span>
-            <i className="bi bi-calendar-event"></i> {formatDateBR(post.createAt)}
-          </p>
-
-          <p className="card-text flex-grow-1">{truncate(post.content, 100)}</p>
-
-          {categoryDesc && (
-            <p className="text-secondary small fst-italic mb-3">{categoryDesc}</p>
-          )}
-
-          <Button
-            variant="gradient"
-            className="mt-auto"
-            onClick={handleReadMoreClick}
-          >
-            Ler mais
-          </Button>
-
-          <PostCommented
-            postId={post.id}
-            onCommentAccess={handleCommentAccessClick}
-            initialLikes={initialLikes ?? 0}
-            initialUserLiked={post.userLiked ?? false}
-          />
+          {/* Área de Texto */}
+          <div className="text-section p-3 flex-grow-1">
+            <h5 className="card-title post-title mb-2">{post.title}</h5>
+            
+            <p className="card-text post-teaser">{truncate(post.content, 100)}</p>
+          </div>
         </div>
-      </Card>
 
-      {!isAuthenticated && <AuthOverlay />}
+        {/* 3. INTERAÇÕES - SÓ SE AUTENTICADO */}
+        {isAuthenticated ? (
+            <div className="card-footer d-flex align-items-center justify-content-between nostalgic-footer">
+                <PostCommented
+                    postId={post.id}
+                    onCommentAccess={handleCommentAccessClick}
+                    initialLikes={initialLikes ?? 0}
+                    initialUserLiked={post.userLiked ?? false}
+                />
+                 {/* Link para incentivar o clique no feed */}
+                <span className='read-more-link small' onClick={handleCardClick}>
+                    Ver Post Completo →
+                </span>
+            </div>
+        ) : (
+             <div className="p-3">
+                <PaywallPlaceholder />
+            </div>
+        )}
+        
+      </Card>
     </article>
   );
 }
